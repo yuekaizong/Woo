@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".activity.HomeActivity">
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/navigation_item_home"
+            android:icon="@android:drawable/ic_menu_info_details"
+            android:title="Home" />
+        <item
+            android:id="@+id/navigation_item_profile"
+            android:icon="@android:drawable/ic_menu_info_details"
+            android:title="Profile" />
+        <item
+            android:id="@+id/navigation_item_message"
+            android:icon="@android:drawable/ic_menu_info_details"
+            android:title="Message" />
+
+        <item
+            android:id="@+id/navigation_item_setting"
+            android:icon="@android:drawable/ic_menu_info_details"
+            android:title="Setting" />
+    </group>
+</menu>

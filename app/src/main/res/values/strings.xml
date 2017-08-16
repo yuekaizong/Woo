@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">Woo</string>
+    <string name="title_item_detail">Item Detail</string>
+
+    <string name="drawer_open">Open</string>
+    <string name="drawer_close">Close</string>
+
+</resources>
