@@ -32,10 +32,8 @@ public class HttpUtil {
     private static HttpUtil httpUtil = new HttpUtil();
     public static String token;
 
-    //    private static final String BASE_URL = "http://news-at.zhihu.com/api/4/version/";
     private static final String BASE_URL = "http://10.164.194.121:9000/"; //测试环境
 //    private static final String BASE_URL = "http://10.164.194.121/"; //封试环境
-//    private static final String BASE_URL = "https://shop.haiercash.com/"; //封试环境
 
     //Rerofit中封装了超时处理机制，拦截器
     private HttpUtil() {
