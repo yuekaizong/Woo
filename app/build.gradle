@@ -46,6 +46,7 @@ dependencies {
 
     compile project(':retrofitutil')
     compile project(':gohuaretrofit')
+    compile project(':livedetect')
 
     compile 'com.facebook.fresco:fresco:+'
     compile 'com.facebook.fresco:imagepipeline:+'

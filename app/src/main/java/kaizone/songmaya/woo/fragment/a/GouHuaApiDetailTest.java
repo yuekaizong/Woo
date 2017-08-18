@@ -112,7 +112,8 @@ public class GouHuaApiDetailTest extends Fragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        Log.e("返回", String.format("requestCode=%s,resultCode=%s,data=%s", requestCode, resultCode, data.toString()));
+        Log.e("返回", String.format("requestCode=%s,resultCode=%s,data=%s", requestCode, resultCode,
+                data != null ? data.toString() : "null"));
         if (resultCode == TRCardScan.RESULT_GET_CARD_OK) {
             //身份证扫描返回
             if (requestCode == 1 || requestCode == 2) {
