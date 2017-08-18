@@ -76,7 +76,7 @@ public class HttpUtil {
     static public <T> void toSubscribe(Observable<T> o, Subscriber<T> s) {
         o.subscribeOn(Schedulers.io())
                 .unsubscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+//                .observeOn(AndroidSchedulers.mainThread())
                 .retryWhen(new RetryWhenNetworkException())//超时处理机制
                 .subscribe(s);
     }

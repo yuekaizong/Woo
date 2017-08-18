@@ -19,4 +19,20 @@
         android:layout_height="wrap_content"
         android:text="submit"/>
 
+    <Button
+        android:id="@+id/idcard1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="身份证正面扫描"/>
+    <Button
+        android:id="@+id/idcard2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="身份证反面扫描"/>
+    <Button
+        android:id="@+id/liveDetect"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="人脸识别"/>
+
 </LinearLayout>

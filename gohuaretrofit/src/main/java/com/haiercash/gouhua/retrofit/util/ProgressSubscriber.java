@@ -25,8 +25,9 @@ public class ProgressSubscriber<T> extends Subscriber<T> implements ProgressCanc
     public ProgressSubscriber(SubscriberOnNextListenter mSubscriberOnNextListenter, Context context) {
         this.mSubscriberOnNextListenter = mSubscriberOnNextListenter;
         this.context = context;
-
-        mProgressDialogHandler = new ProgressDialogHandler(context, this, true);
+        if (this.context != null) {
+            mProgressDialogHandler = new ProgressDialogHandler(context, this, true);
+        }
     }
 
     public ProgressSubscriber(SubscriberOnNextListenter mSubscriberOnNextListenter, SubscriberOnErrorListener subscriberOnErrorListener, Context context) {
@@ -41,7 +42,7 @@ public class ProgressSubscriber<T> extends Subscriber<T> implements ProgressCanc
         this.mSubscriberOnNextListenter = mSubscriberOnNextListenter;
         this.context = context;
 
-        if (!isShowProgressDialog) return;
+        if (!isShowProgressDialog || context == null) return;
         mProgressDialogHandler = new ProgressDialogHandler(context, this, true);
     }
 
@@ -63,24 +64,24 @@ public class ProgressSubscriber<T> extends Subscriber<T> implements ProgressCanc
             mProgressDialogHandler.obtainMessage(ProgressDialogHandler.SHOW_PROGRESS_DIALOG).sendToTarget();
         }
 
-        Log.w("ZHT", "start");
+        log("start");
     }
 
     @Override
     public void onCompleted() {
-        Log.w("ZHT", "end");
         dismissProgressDialog();
+        log("end");
     }
 
     @Override
     public void onError(Throwable e) {
-        Log.e("KaiZOne", "onError", e);
+        log(e.getMessage());
         if (e instanceof SocketTimeoutException) {
-            Toast.makeText(context, "网络中断，请检查您的网络状态", Toast.LENGTH_SHORT).show();
+            tips("网络中断，请检查您的网络状态");
         } else if (e instanceof ConnectException) {
-            Toast.makeText(context, "网络中断，请检查您的网络状态", Toast.LENGTH_SHORT).show();
+            tips("网络中断，请检查您的网络状态");
         } else {
-            Toast.makeText(context, "error:" + e.getMessage(), Toast.LENGTH_SHORT).show();
+            tips("error:" + e.getMessage());
         }
 
         if (mSubscriberOnErrorListener != null) {
@@ -105,6 +106,14 @@ public class ProgressSubscriber<T> extends Subscriber<T> implements ProgressCanc
         }
     }
 
+    public void tips(String text) {
+        if (context == null) return;
+        Toast.makeText(context, text, Toast.LENGTH_SHORT).show();
+    }
+
+    public void log(String text){
+        System.out.println(text);
+    }
 
     class ProgressDialogHandler extends Handler {
 

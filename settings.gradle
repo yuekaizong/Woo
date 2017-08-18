@@ -1,2 +1,2 @@
-include ':app', ':gohuaretrofit'
+include ':app', ':gohuaretrofit', ':livedetect'
 include ':retrofitutil'
