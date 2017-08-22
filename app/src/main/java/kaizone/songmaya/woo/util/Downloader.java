@@ -6,9 +6,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Environment;
 import android.util.Log;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -39,7 +41,7 @@ public class Downloader {
             result.add(obj);
         }
         cursor.close();
-        Log.e(TAG, "download tasks: "+result.toString());
+        Log.e(TAG, "download tasks: " + result.toString());
         return result;
     }
 
@@ -57,11 +59,11 @@ public class Downloader {
         dm.enqueue(r);
     }
 
-    public static void enqueueOnly(Context context, String uri, Runnable call){
+    public static void enqueueOnly(Context context, String uri, Runnable call) {
         List<Info> list = queryRunning(context);
-        for (int i=0; i<list.size(); i++){
+        for (int i = 0; i < list.size(); i++) {
             Info info = list.get(i);
-            if(uri.equals(info.getUri())){
+            if (uri.equals(info.getUri())) {
                 call.run();
                 Log.e(TAG, String.format("enqueueOnly: %s is download running", uri));
                 return;
@@ -80,12 +82,27 @@ public class Downloader {
         public void onReceive(Context context, Intent intent) {
             long downloadId = intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1);
             if (downloadId != -1) {
-                DownloadManager manger = (DownloadManager) context.getSystemService(Context.DOWNLOAD_SERVICE);
-                Intent install = new Intent(Intent.ACTION_VIEW);
-                Uri uri = manger.getUriForDownloadedFile(downloadId);
-                install.setDataAndType(uri, "application/vnd.android.package-archive");
-                install.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                context.startActivity(install);
+                DownloadManager manager = (DownloadManager) context.getSystemService(Context.DOWNLOAD_SERVICE);
+                //增加对小米MI 6下载自动安装提示:解析软件包出现问题
+                if ("MI 6".equals(Build.MODEL)) {
+                    Uri uri = manager.getUriForDownloadedFile(downloadId);
+                    String path = MediaUtils.queryFilePath(context, uri);
+                    File file = new File(path);
+                    Log.e(TAG, "安装文件：" + file.getAbsolutePath());
+
+                    Intent install = new Intent(Intent.ACTION_VIEW);
+                    install.setDataAndType(Uri.parse("file://" + file.getAbsolutePath()), "application/vnd.android.package-archive");
+                    install.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    context.startActivity(install);
+                } else {
+                    Uri uri = manager.getUriForDownloadedFile(downloadId);
+                    Intent install = new Intent(Intent.ACTION_VIEW);
+                    install.setDataAndType(uri, "application/vnd.android.package-archive");
+                    install.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    context.startActivity(install);
+
+                }
+
             }
         }
     }

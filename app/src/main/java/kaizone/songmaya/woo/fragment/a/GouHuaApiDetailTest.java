@@ -17,6 +17,7 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 
 import com.idcard.CardInfo;
+import com.idcard.TFieldID;
 import com.idcard.TengineID;
 import com.livedetect.LiveDetectActivity;
 import com.ui.card.TRCardScan;
@@ -97,16 +98,26 @@ public class GouHuaApiDetailTest extends Fragment {
     }
 
     void doLiveDetect() {
-        Intent intent = new Intent(getActivity(), LiveDetectActivity.class);
-        Bundle bundle = new Bundle();
-        bundle.putBoolean("isRandomable", true);
-        bundle.putString("actions", "01279");
-        bundle.putString("selectActionsNum", "3");
-        bundle.putString("singleActionDectTime", "8");
-        bundle.putBoolean("isWaterable", false);
-        bundle.putBoolean("openSound", true);
-        intent.putExtra("comprehensive_set", bundle);
-        startActivityForResult(intent, 3);
+        if (SystemUtils.checkHasPermission(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                && SystemUtils.checkHasPermission(getActivity(), Manifest.permission.CAMERA)) {
+            Intent intent = new Intent(getActivity(), LiveDetectActivity.class);
+            Bundle bundle = new Bundle();
+            bundle.putBoolean("isRandomable", true);
+            bundle.putString("actions", "01279");
+            bundle.putString("selectActionsNum", "3");
+            bundle.putString("singleActionDectTime", "8");
+            bundle.putBoolean("isWaterable", false);
+            bundle.putBoolean("openSound", true);
+            intent.putExtra("comprehensive_set", bundle);
+            startActivityForResult(intent, 3);
+        } else {
+            Tips.toDialog(getActivity(), "开启存储和摄像头权限", "确定", new Runnable() {
+                @Override
+                public void run() {
+                    openPermission();
+                }
+            });
+        }
     }
 
     @Override
@@ -121,6 +132,7 @@ public class GouHuaApiDetailTest extends Fragment {
                 if (cardInfo != null) {
                     Log.e(TAG, "onActivityResult: " + cardInfo.getAllinfo());
                     Tips.toToast(getActivity(), cardInfo.getAllinfo());
+                    String name = cardInfo.getFieldString(TFieldID.NAME);
                 } else {
                     Log.e(TAG, "onActivityResult: cardInfo == null");
                 }

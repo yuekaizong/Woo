@@ -115,7 +115,7 @@ public class MediaUtils {
      * @param uri The Uri to query.
      * @author paulburke
      */
-    public static String getPath(final Context context, final Uri uri) {
+    public static String queryFilePath(final Context context, final Uri uri) {
 
         final boolean isKitKat = Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT;
 
