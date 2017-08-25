@@ -22,8 +22,14 @@ import com.idcard.TengineID;
 import com.livedetect.LiveDetectActivity;
 import com.ui.card.TRCardScan;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import kaizone.songmaya.woo.MyApplication;
 import kaizone.songmaya.woo.R;
+import kaizone.songmaya.woo.util.AESUtil;
+import kaizone.songmaya.woo.util.DES;
+import kaizone.songmaya.woo.util.SecretTool;
 import kaizone.songmaya.woo.util.SystemUtils;
 import kaizone.songmaya.woo.util.Tips;
 import kaizone.songmaya.woo.widget.DelEditText;
@@ -58,6 +64,33 @@ public class GouHuaApiDetailTest extends Fragment {
                 Editable editable2 = new SpannableStringBuilder(str);
 
                 Tips.toDialog(getContext(), editable2.toString());
+
+//                String source = "This is for DES test";
+//                String password = "123456";
+//                String temp = AESUtil.encrypt(password, source);
+//                System.out.println(temp + ":" + temp.length());
+//                String result2 = AESUtil.decrypt(temp, password);
+//                System.out.println(result2 + ":" + result2.length());
+//                System.out.println(source.equals(result2));
+                // 指定密匙
+                String key = DES.ENCRYPT_KEY;
+                // 指定需要加密的明文
+                String text = "这是一段加密的文字，传到后台";
+                try {
+                    // 调用DES加密方法
+                    String encryString = DES.encryptDES(text, key);
+                    System.out.println("DES加密结果： " + encryString);
+                    // 调用DES解密方法
+                    String decryString = DES.decryptDES(encryString, key);
+                    System.out.println("DES解密结果： " + decryString);
+
+                    Map map = new HashMap();
+                    map.put("id","1");
+                    map.put("jm", encryString);
+                    TestData.post("http://10.164.17.173:8080/jsyl/pc/u", map);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         });
 
@@ -131,8 +164,7 @@ public class GouHuaApiDetailTest extends Fragment {
                 final CardInfo cardInfo = (CardInfo) data.getSerializableExtra("cardinfo");
                 if (cardInfo != null) {
                     Log.e(TAG, "onActivityResult: " + cardInfo.getAllinfo());
-                    Tips.toToast(getActivity(), cardInfo.getAllinfo());
-                    String name = cardInfo.getFieldString(TFieldID.NAME);
+                    Tips.toDialog(getActivity(), cardInfo.getAllinfo());
                 } else {
                     Log.e(TAG, "onActivityResult: cardInfo == null");
                 }

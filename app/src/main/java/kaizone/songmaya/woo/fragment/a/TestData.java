@@ -1,11 +1,35 @@
 package kaizone.songmaya.woo.fragment.a;
 
+import android.os.AsyncTask;
+import android.util.Log;
 import android.view.View;
 
+import com.idcard.CardInfo;
+import com.idcard.TFieldID;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import kaizone.songmaya.jsyl.retrofitutil.bean.Viewpoint;
+import kaizone.songmaya.woo.util.DES;
+import okhttp3.FormBody;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
+import retrofit2.http.FormUrlEncoded;
 
 /**
  * Created by yuekaizone on 2017/6/15.
@@ -13,16 +37,18 @@ import kaizone.songmaya.jsyl.retrofitutil.bean.Viewpoint;
 
 public class TestData {
 
+    private static final String TAG = "TestData";
+
     public static List<Viewpoint> viewpoints;
 
-    public static List<Viewpoint> getViewpoints(){
-        if(viewpoints == null){
+    public static List<Viewpoint> getViewpoints() {
+        if (viewpoints == null) {
             viewpoints = obtainViewpoints();
         }
         return viewpoints;
     }
 
-    private static List<Viewpoint> obtainViewpoints(){
+    private static List<Viewpoint> obtainViewpoints() {
 
         Viewpoint viewpoint = new Viewpoint();
         viewpoint.img1 = "http://img.ivsky.com/img/tupian/pre/201704/28/haian_fengjing.jpg";
@@ -74,7 +100,154 @@ public class TestData {
         return data;
     }
 
-    public static Viewpoint getViewpoint(int i){
+    public static Viewpoint getViewpoint(int i) {
         return getViewpoints().get(0);
+    }
+
+    public static class Info {
+        public String name;
+        public String sex;
+        public String folk;
+        public String birthday;
+        public String address;
+        public String num;
+        public String issue;
+        public String period;
+        public String phoneNum;
+
+        public static Info parse(CardInfo cardInfo) {
+            Info obj = new Info();
+            obj.name = cardInfo.getFieldString(TFieldID.NAME);
+            obj.sex = cardInfo.getFieldString(TFieldID.SEX);
+            obj.folk = cardInfo.getFieldString(TFieldID.FOLK);
+            obj.birthday = cardInfo.getFieldString(TFieldID.BIRTHDAY);
+            obj.address = cardInfo.getFieldString(TFieldID.ADDRESS);
+            obj.num = cardInfo.getFieldString(TFieldID.NUM);
+            obj.issue = cardInfo.getFieldString(TFieldID.ISSUE);
+            obj.period = cardInfo.getFieldString(TFieldID.PERIOD);
+            obj.phoneNum = "13109097878";
+            return obj;
+        }
+
+        public static JSONObject parse(Info obj) {
+            JSONObject json = new JSONObject();
+            try {
+                json.putOpt("name", obj.name);
+                json.putOpt("sex", obj.sex);
+                json.putOpt("folk", obj.folk);
+                json.putOpt("birthday", obj.birthday);
+                json.putOpt("address", obj.address);
+                json.putOpt("num", obj.num);
+                json.putOpt("issue", obj.issue);
+                json.putOpt("period", obj.period);
+                json.putOpt("phoneNum", obj.phoneNum);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            return json;
+        }
+    }
+
+    public static void check(CardInfo cardInfo) {
+        try {
+            JSONObject jsonObject = Info.parse(Info.parse(cardInfo));
+            Log.e(TAG, String.format("%s", jsonObject.toString()));
+            String encrypt = DES.encryptDES(jsonObject.toString(), "*()&^%$#");
+            Log.e(TAG, String.format("encrypt %s", encrypt));
+            String source = DES.decryptDES(encrypt, "*()&^%$#");
+            Log.e(TAG, String.format("source %s", source));
+            HashMap map = new HashMap();
+            map.put("ciphertext", encrypt);
+            http("POST", map);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void http(String method, Map<String, String> map) {
+
+        try {
+            URL url = new URL("http://10.164.17.173:8080/jsyl/pc/u");
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod(method);// 提交模式
+            conn.setDoOutput(true);
+            conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+            StringBuffer params = new StringBuffer();
+            params.append("?");
+            Iterator<Map.Entry<String, String>> iterator = map.entrySet().iterator();
+            while (iterator.hasNext()) {
+                Map.Entry<String, String> entry = iterator.next();
+                params.append(entry.getKey()).append("=").append(entry.getValue()).append("&");
+            }
+            byte[] bypes = params.toString().getBytes();
+            conn.getOutputStream().write(bypes);// 输入参数
+            InputStream is = conn.getInputStream();
+            BufferedReader reader = new BufferedReader(new InputStreamReader(is));
+            String line = null;
+            StringBuilder sb = new StringBuilder();
+            while ((line = reader.readLine()) != null) {
+                sb.append(line).append("\n");
+            }
+            reader.close();
+            is.close();
+            System.out.println(sb.toString());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void post(String url, Map map) {
+        RequestInfo requestInfo = new RequestInfo();
+        requestInfo.url = url;
+        requestInfo.map = map;
+        requestInfo.method = "POST";
+        new MyTask().execute(requestInfo);
+    }
+
+    static OkHttpClient client = new OkHttpClient();
+
+    private static String okhttp3post(String url, Map map) throws IOException {
+        FormBody.Builder builder = new FormBody.Builder();
+        Iterator<Map.Entry<String, String>> iterator = map.entrySet().iterator();
+        while (iterator.hasNext()) {
+            Map.Entry<String, String> entry = iterator.next();
+            builder.add(entry.getKey(), entry.getValue());
+        }
+        Request request = new Request.Builder()
+                .url(url)
+                .post(builder.build())
+                .build();
+
+        Response response = client.newCall(request).execute();
+        if (response.isSuccessful()) {
+            return response.body().string();
+        } else {
+            throw new IOException("Unexpected code " + response);
+        }
+    }
+
+    private static class MyTask extends AsyncTask<RequestInfo, Object, Object> {
+        @Override
+        protected Object doInBackground(RequestInfo... params) {
+            try {
+                if (params.length >= 1) {
+                    RequestInfo requestInfo = params[0];
+                    if ("GET".equals(requestInfo.method)) {
+
+                    } else if ("POST".equals(requestInfo.method)) {
+                        return okhttp3post(requestInfo.url, requestInfo.map);
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+    }
+
+    static class RequestInfo {
+        public String method;
+        public String url;
+        public Map map;
     }
 }

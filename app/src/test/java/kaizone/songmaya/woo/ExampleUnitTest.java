@@ -21,6 +21,10 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import kaizone.songmaya.woo.util.AESUtil;
+import kaizone.songmaya.woo.util.DES;
+import kaizone.songmaya.woo.util.SecretTool;
+
 import static org.junit.Assert.*;
 
 /**
@@ -144,6 +148,37 @@ public class ExampleUnitTest {
         }
         channel.close();
         selector.close();
+    }
+
+    @Test
+    public void secretToolTest() throws Exception{
+        String source = "This is for DES test";
+        String password = "1234567890qwerty";
+        String temp = AESUtil.simpleEncrypt(source, password);
+        System.out.println(temp + ":" + temp.length());
+        String result2 = AESUtil.simpleDecrypt(temp, password);
+        System.out.println(result2 + ":" + result2.length());
+        System.out.println(source.equals(result2));
+
+    }
+
+    @Test
+    public void desTest() {
+        // 指定密匙
+        String key = "*()&^%$#";
+        // 指定需要加密的明文
+        String text = "4454069u =o 5h6u= bopregkljoj";
+        try {
+            // 调用DES加密方法
+            String encryString = DES.encryptDES(text, key);
+            System.out.println("DES加密结果： " + encryString);
+            // 调用DES解密方法
+            String decryString = DES.decryptDES(encryString, key);
+            System.out.println("DES解密结果： " + decryString);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
     }
 
     public ByteBuffer getByteBuffer(String body) {
