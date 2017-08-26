@@ -35,6 +35,7 @@ import kaizone.songmaya.woo.fragment.a.GoFragment3;
 import kaizone.songmaya.woo.fragment.a.GoMyPublishFragment;
 import kaizone.songmaya.woo.fragment.a.GoWebFragment;
 import kaizone.songmaya.woo.fragment.a.GouHuaApiTest;
+import kaizone.songmaya.woo.fragment.a.LocalFunc;
 import kaizone.songmaya.woo.fragment.a.TestData;
 import kaizone.songmaya.woo.util.RecyclerViewAdapterTemplate;
 import kaizone.songmaya.woo.util.Tips;
@@ -121,6 +122,7 @@ public class HomeActivity extends BaseActivity {
     public void setUpPanel(){
         findViewById(R.id.panel1).setVisibility(View.GONE);
         findViewById(R.id.panel2).setVisibility(View.VISIBLE);
+        replaceFragment(LocalFunc.ID);
     }
 
     @Override

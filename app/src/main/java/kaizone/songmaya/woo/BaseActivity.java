@@ -7,12 +7,16 @@ import android.os.Bundle;
 import android.support.annotation.MainThread;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.PermissionChecker;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
 
 import com.tendcloud.tenddata.TCAgent;
 
 import kaizone.songmaya.woo.util.FrescoUtils;
+import kaizone.songmaya.woo.util.PermissionConfig;
+import kaizone.songmaya.woo.util.SystemUtils;
 import kaizone.songmaya.woo.util.Tips;
 
 /**
@@ -29,20 +33,8 @@ public class BaseActivity extends AppCompatActivity {
     }
 
     @TargetApi(23)
-    private boolean checkHashPermission() {
-        int permission = PermissionChecker.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
-        if (permission != PackageManager.PERMISSION_GRANTED) {
-            requestPermissions(
-                    new String[]{
-                            Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                            Manifest.permission.READ_PHONE_STATE,
-                            Manifest.permission.DISABLE_KEYGUARD,
-                            Manifest.permission.ACCESS_WIFI_STATE
-                    },
-                    123);
-            return false;
-        }
-        return true;
+    private void checkHashPermission() {
+        ActivityCompat.requestPermissions(this, PermissionConfig.need, PermissionConfig.requestCode);
     }
 
     @Override
@@ -60,15 +52,15 @@ public class BaseActivity extends AppCompatActivity {
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == 123) {
-            if (Manifest.permission.WRITE_EXTERNAL_STORAGE.equals(permissions[0])
-                    && Manifest.permission.READ_PHONE_STATE.equals(permissions[1])
-                    && Manifest.permission.DISABLE_KEYGUARD.equals(permissions[2])
-                    && Manifest.permission.ACCESS_WIFI_STATE.equals(permissions[3])
-                    && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                Tips.toToast(this, "授权成功");
-            } else {
-                this.finish();
+        if (requestCode == PermissionConfig.requestCode) {
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < grantResults.length; i++) {
+                if (grantResults[i] == PackageManager.PERMISSION_DENIED) {
+                    sb.append(permissions[i]).append("\n");
+                }
+            }
+            if(!TextUtils.isEmpty(sb.toString())){
+                Tips.toDialog(this, sb.toString());
             }
         }
     }

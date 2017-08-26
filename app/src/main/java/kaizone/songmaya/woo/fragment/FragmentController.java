@@ -11,6 +11,8 @@ import kaizone.songmaya.woo.fragment.a.GoMyPublishFragment;
 import kaizone.songmaya.woo.fragment.a.GoWebFragment;
 import kaizone.songmaya.woo.fragment.a.GouHuaApiDetailTest;
 import kaizone.songmaya.woo.fragment.a.GouHuaApiTest;
+import kaizone.songmaya.woo.fragment.a.LocalDetail;
+import kaizone.songmaya.woo.fragment.a.LocalFunc;
 
 /**
  * Created by yuekaizone on 2017/6/7.
@@ -41,6 +43,12 @@ public class FragmentController {
         }
         else if(id == GouHuaApiDetailTest.ID){
             return GouHuaApiDetailTest.newInstance(bd);
+        }
+        else if(id == LocalFunc.ID){
+            return LocalFunc.newInstance(bd);
+        }
+        else if(id == LocalDetail.ID){
+            return LocalDetail.newInstance(bd);
         }
         return null;
     }

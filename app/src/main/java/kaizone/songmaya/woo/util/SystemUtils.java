@@ -30,17 +30,18 @@ import java.util.List;
 public class SystemUtils {
     /**
      * 判断应用是否已经启动
-     * @param context 一个context
+     *
+     * @param context     一个context
      * @param packageName 要判断应用的包名
      * @return boolean
      */
-    public static boolean isAppAlive(Context context, String packageName){
+    public static boolean isAppAlive(Context context, String packageName) {
         ActivityManager activityManager =
-                (ActivityManager)context.getSystemService(Context.ACTIVITY_SERVICE);
+                (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
         List<ActivityManager.RunningAppProcessInfo> processInfos
                 = activityManager.getRunningAppProcesses();
-        for(int i = 0; i < processInfos.size(); i++){
-            if(processInfos.get(i).processName.equals(packageName)){
+        for (int i = 0; i < processInfos.size(); i++) {
+            if (processInfos.get(i).processName.equals(packageName)) {
                 Log.i("NotificationLaunch",
                         String.format("the %s is running, isAppAlive return true", packageName));
                 return true;
@@ -53,6 +54,7 @@ public class SystemUtils {
 
     /**
      * 判断GPS是否开启，GPS或者AGPS开启一个就认为是开启的
+     *
      * @param context
      * @return true 表示开启
      */
@@ -71,6 +73,7 @@ public class SystemUtils {
 
     /**
      * 判断GPS是否开启，
+     *
      * @param context
      * @return true 表示开启
      */
@@ -89,7 +92,7 @@ public class SystemUtils {
                     .getApplicationInfo(context.getPackageName(),
                             PackageManager.GET_META_DATA);
             value = info.metaData.getString(name);
-            if(TextUtils.isEmpty(value)){
+            if (TextUtils.isEmpty(value)) {
                 value = String.valueOf(info.metaData.getInt(name));
             }
         } catch (PackageManager.NameNotFoundException e) {
@@ -105,39 +108,52 @@ public class SystemUtils {
     /**
      * 获取设备标识码
      */
-    public static String getDeviceID(Context context)
-    {
+    public static String getDeviceID(Context context) {
         String deviceId = "";
-        try
-        {
+        try {
             TelephonyManager mTelephonyMgr = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
             deviceId = mTelephonyMgr.getDeviceId();
-        } catch (Exception e)
-        {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return deviceId;
     }
 
-    public static boolean checkHasPermission(Activity activity, String permission){
+    public static boolean checkHasPermission(Activity activity, String permission) {
         int checkResult = PermissionChecker.checkSelfPermission(activity, permission);
         if (checkResult != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(activity, new String[]{
                     permission,
-            }, 123);
+            }, PermissionConfig.requestCode);
             return false;
         }
         return true;
     }
 
+    public static boolean checkHasPermissions(Activity activity, String[] permissions) {
+        if (permissions == null)
+            return true;
+        for (int i = 0; i < permissions.length; i++) {
+            if (!checkHasPermission(activity, permissions[i]))
+                return false;
+        }
+        return true;
+    }
+
     public static String obtainDhcpInfo(Activity activity) {
-        if (checkHasPermission(activity, Manifest.permission.ACCESS_WIFI_STATE)) return "";
+        if (!checkHasPermission(activity, Manifest.permission.ACCESS_WIFI_STATE)) return "";
         WifiManager wifiManager = (WifiManager) activity.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
         return wifiManager.getDhcpInfo().toString();
     }
 
+    public static String obtainNetworkInfo(Activity activity) {
+        if (!checkHasPermission(activity, Manifest.permission.ACCESS_NETWORK_STATE)) return "";
+        NetworkInfo info = ((ConnectivityManager) activity.getSystemService(Context.CONNECTIVITY_SERVICE)).getActiveNetworkInfo();
+        return info.toString();
+    }
+
     public static String obtainIpAddress(Activity activity) {
-        if(!checkHasPermission(activity, Manifest.permission.ACCESS_NETWORK_STATE)) return "";
+        if (!checkHasPermission(activity, Manifest.permission.ACCESS_NETWORK_STATE)) return "";
         NetworkInfo info = ((ConnectivityManager) activity.getSystemService(Context.CONNECTIVITY_SERVICE)).getActiveNetworkInfo();
         if (info != null && info.isConnected()) {
             if (info.getType() == ConnectivityManager.TYPE_MOBILE) {//当前使用2G/3G/4G网络
@@ -167,6 +183,7 @@ public class SystemUtils {
         }
         return null;
     }
+
     /**
      * 将得到的int类型的IP转换为String类型
      *
