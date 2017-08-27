@@ -75,7 +75,7 @@ public class GouHuaApiDetailTest extends Fragment {
                 // 指定密匙
                 String key = DES.ENCRYPT_KEY;
                 // 指定需要加密的明文
-                String text = "这是一段加密的文字，传到后台";
+                String text = "这是一段加密后的文字为什么要加空格就加密错误这个是什么原因呢，经过多次调试终于将Android Base64代码放在服务器上，解决这个问题";
                 try {
                     // 调用DES加密方法
                     String encryString = DES.encryptDES(text, key);
@@ -87,7 +87,7 @@ public class GouHuaApiDetailTest extends Fragment {
                     Map map = new HashMap();
                     map.put("id","1");
                     map.put("jm", encryString);
-                    TestData.post("http://10.164.17.173:8080/jsyl/pc/u", map);
+                    TestData.post("http://192.168.0.105:8080/jsyl/pc/u", map);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
