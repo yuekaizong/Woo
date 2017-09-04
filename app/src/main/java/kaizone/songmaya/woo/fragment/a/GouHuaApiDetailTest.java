@@ -36,6 +36,7 @@ import kaizone.songmaya.woo.util.SystemUtils;
 import kaizone.songmaya.woo.util.Tips;
 import kaizone.songmaya.woo.widget.CardInputEditText;
 import kaizone.songmaya.woo.widget.DelEditText;
+import kaizone.songmaya.woo.widget.TimeTextView;
 
 /**
  * Created by Administrator on 2017/8/9.
@@ -50,6 +51,7 @@ public class GouHuaApiDetailTest extends Fragment {
     EditText bankEditText;
     CardInputEditText cardinputEditText;
     EditText autoDelEditText;
+    TimeTextView timeTextView;
 
     @Nullable
     @Override
@@ -93,7 +95,31 @@ public class GouHuaApiDetailTest extends Fragment {
             }
         });
 
+        timeTextView = (TimeTextView) view.findViewById(R.id.timeTextView);
+        timeTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getCode();
+            }
+        });
+
         return view;
+    }
+
+    public void getCode() {
+        timeTextView.setLastTime(new TimeTextView.SendMsgListener() {
+            @Override
+            public void countStart() {
+                //倒计时之前调用
+                timeTextView.setClickable(false);
+            }
+
+            @Override
+            public void countFinished() {
+                //倒计时完后秒后调用
+                timeTextView.setClickable(true);
+            }
+        });
     }
 
     void queryContent() {

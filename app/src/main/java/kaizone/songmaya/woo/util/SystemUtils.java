@@ -23,6 +23,8 @@ import java.net.Inet4Address;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.Enumeration;
 import java.util.List;
 
@@ -103,6 +105,13 @@ public class SystemUtils {
 
     public static String metaDataValueForTDChannelId(Activity context) {
         return metaDataValue(context, "TD_CHANNEL_ID");
+    }
+
+
+    public static long currentTimestamp() {
+        Calendar calendar = Calendar.getInstance();
+        Date date = calendar.getTime();
+        return date.getTime();
     }
 
     /**

@@ -54,5 +54,10 @@
             android:layout_height="wrap_content"
             android:text="pushData"
             android:textAllCaps="false" />
+        <kaizone.songmaya.woo.widget.TimeTextView
+            android:id="@+id/timeTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
     </LinearLayout>
 </ScrollView>
