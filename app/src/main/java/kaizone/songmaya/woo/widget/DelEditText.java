@@ -78,7 +78,9 @@ public class DelEditText extends EditText {
         @Override
         public void afterTextChanged(Editable editable) {
             if (editable.toString().length() > 0) {
-                addIcon();
+                if(isFocused()){
+                    addIcon();
+                }
             } else {
                 removeIcon();
             }

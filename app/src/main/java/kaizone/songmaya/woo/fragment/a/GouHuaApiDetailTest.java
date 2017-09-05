@@ -51,6 +51,7 @@ public class GouHuaApiDetailTest extends Fragment {
     EditText bankEditText;
     CardInputEditText cardinputEditText;
     EditText autoDelEditText;
+    EditText autoDelEditText2;
     TimeTextView timeTextView;
 
     @Nullable
@@ -60,6 +61,7 @@ public class GouHuaApiDetailTest extends Fragment {
         bankEditText = (EditText) view.findViewById(R.id.et);
 
         autoDelEditText = (DelEditText) view.findViewById(R.id.del_et);
+        autoDelEditText2 = (DelEditText) view.findViewById(R.id.del_et2);
 
         cardinputEditText = (CardInputEditText) view.findViewById(R.id.cardinputEditText);
 
@@ -67,6 +69,8 @@ public class GouHuaApiDetailTest extends Fragment {
             @Override
             public void onClick(View v) {
                 queryContent();
+                autoDelEditText.setText("1234567");
+                autoDelEditText2.setText("qwert");
             }
         });
 
