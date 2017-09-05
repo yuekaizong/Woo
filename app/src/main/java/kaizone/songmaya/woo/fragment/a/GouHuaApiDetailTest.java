@@ -3,35 +3,34 @@ package kaizone.songmaya.woo.fragment.a;
 import android.Manifest;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.provider.Settings;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.content.PermissionChecker;
-import android.text.Editable;
-import android.text.SpannableString;
-import android.text.SpannableStringBuilder;
+import android.support.v4.content.FileProvider;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 
+import com.facebook.drawee.view.SimpleDraweeView;
 import com.idcard.CardInfo;
-import com.idcard.TFieldID;
 import com.idcard.TengineID;
 import com.livedetect.LiveDetectActivity;
 import com.ui.card.TRCardScan;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
 import kaizone.songmaya.woo.MyApplication;
 import kaizone.songmaya.woo.R;
-import kaizone.songmaya.woo.util.AESUtil;
 import kaizone.songmaya.woo.util.DES;
-import kaizone.songmaya.woo.util.SecretTool;
 import kaizone.songmaya.woo.util.SystemUtils;
 import kaizone.songmaya.woo.util.Tips;
 import kaizone.songmaya.woo.widget.CardInputEditText;
@@ -47,6 +46,7 @@ public class GouHuaApiDetailTest extends Fragment {
     public static final int ID = GouHuaApiDetailTest.class.hashCode();
     public static final String NAME = GouHuaApiDetailTest.class.getSimpleName();
     public static final String TAG = "GouHuaApiTest";
+    private static final int REQUEST_CODE_TAKEPHOTO = 200;
 
     EditText bankEditText;
     CardInputEditText cardinputEditText;
@@ -100,6 +100,13 @@ public class GouHuaApiDetailTest extends Fragment {
             @Override
             public void onClick(View v) {
                 getCode();
+            }
+        });
+
+        view.findViewById(R.id.takePhoto).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                takePhoto();
             }
         });
 
@@ -186,6 +193,12 @@ public class GouHuaApiDetailTest extends Fragment {
                     Log.e(TAG, "onActivityResult: cardInfo == null");
                 }
             }
+        }//
+        if (requestCode == REQUEST_CODE_TAKEPHOTO) {
+            File photoFile = new File(getActivity().getExternalCacheDir() + "/www", "photo.jpg");
+            ImageView draweeView = new ImageView(getActivity());
+            draweeView.setImageURI(Uri.fromFile(photoFile));
+            Tips.show(draweeView);
         }
 
     }
@@ -232,6 +245,31 @@ public class GouHuaApiDetailTest extends Fragment {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+
+    void takePhoto() {
+        File photoDir = new File(getActivity().getExternalCacheDir() + "/www");
+        if (!photoDir.exists()) {
+            photoDir.mkdir();
+        }
+
+        String photoPath = photoDir + "/photo.jpg";
+
+        Intent intent = new Intent();
+        intent.setAction(MediaStore.ACTION_IMAGE_CAPTURE);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            Uri photoURI = FileProvider.getUriForFile(getActivity(), getActivity().getPackageName() + ".provider",
+                    new File(photoPath));
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_GRANT_READ_URI_PERMISSION
+                    | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+            intent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+        } else {
+            intent.addCategory(Intent.CATEGORY_DEFAULT);
+            Uri uri = Uri.parse("file://" + photoPath);
+            intent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
+        }
+        startActivityForResult(intent, REQUEST_CODE_TAKEPHOTO);
     }
 
     public static GouHuaApiDetailTest newInstance(Bundle bd) {
