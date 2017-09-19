@@ -8,8 +8,12 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.provider.Settings;
 import android.support.annotation.Nullable;
+import android.support.design.widget.TextInputEditText;
+import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.FileProvider;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -54,10 +58,17 @@ public class GouHuaApiDetailTest extends Fragment {
     EditText autoDelEditText2;
     TimeTextView timeTextView;
 
+    TextInputLayout textInputLayout;
+    TextInputEditText textInputEditText;
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.gouhua_apidetail, null);
+        textInputLayout = (TextInputLayout) view.findViewById(R.id.textInputWrapper);
+        textInputEditText = (TextInputEditText) view.findViewById(R.id.input1);
+        textInputEditText.addTextChangedListener(new TextChangedWatcher());
+
         bankEditText = (EditText) view.findViewById(R.id.et);
 
         autoDelEditText = (DelEditText) view.findViewById(R.id.del_et);
@@ -274,6 +285,41 @@ public class GouHuaApiDetailTest extends Fragment {
             intent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
         }
         startActivityForResult(intent, REQUEST_CODE_TAKEPHOTO);
+    }
+
+    public class TextChangedWatcher implements TextWatcher {
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+        }
+
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+        }
+
+        @Override
+        public void afterTextChanged(Editable s) {
+            if ("error".equals(s.toString())) {
+                textInputLayout.setErrorEnabled(true);
+                textInputLayout.setError("出错啦！！！");
+            } else if ("count".equals(s.toString())) {
+                textInputLayout.setCounterEnabled(true);
+                textInputLayout.setCounterMaxLength(100);
+            } else if ("appearance".equals(s.toString())) {
+                textInputLayout.setHintTextAppearance(R.style.FloatingStyle);
+            } else if("password".equals(s.toString())){
+                textInputLayout.setPasswordVisibilityToggleEnabled(true);
+                textInputLayout.setPasswordVisibilityToggleDrawable(R.mipmap.ic_launcher);
+                textInputLayout.setPasswordVisibilityToggleContentDescription("这是密码");
+            }
+            else if ("false".equals(s.toString())) {
+                textInputLayout.setPasswordVisibilityToggleContentDescription("");
+                textInputLayout.setErrorEnabled(false);
+                textInputLayout.setCounterEnabled(false);
+                textInputLayout.setPasswordVisibilityToggleEnabled(false);
+            }
+        }
     }
 
     public static GouHuaApiDetailTest newInstance(Bundle bd) {

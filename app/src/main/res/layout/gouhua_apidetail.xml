@@ -10,15 +10,39 @@
         android:layout_margin="10dp"
         android:orientation="vertical">
 
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/textInputWrapper"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColorHint="@color/greenyellow">
+
+            <android.support.design.widget.TextInputEditText
+                android:id="@+id/input1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@null"
+                android:layout_margin="5dp"
+                android:hint="登录名" />
+        </android.support.design.widget.TextInputLayout>
+
+
         <com.example.library.BandCardEditText
             android:id="@+id/et"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:hint="银行卡" />
 
-        <kaizone.songmaya.woo.widget.CardInputEditText
-            android:id="@+id/cardinputEditText"
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/cardinputEditTextLayout"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content">
+
+            <kaizone.songmaya.woo.widget.CardInputEditText
+                android:id="@+id/cardinputEditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="请输入银行卡" />
+        </android.support.design.widget.TextInputLayout>
 
         <kaizone.songmaya.woo.widget.DelEditText
             android:id="@+id/del_et"

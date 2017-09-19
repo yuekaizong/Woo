@@ -24,4 +24,11 @@
             <enum name="IDCard" value="2" />
         </attr>
     </declare-styleable>
+
+    <style name="FloatingStyle" parent="@android:style/TextAppearance">
+        <item name="android:textColor">@color/crimson</item>
+        <item name="android:textSize">20sp</item>
+        <item name="android:textColorHint">@color/burlywood</item>
+        <item name="android:textStyle">italic</item>
+    </style>
 </resources>
