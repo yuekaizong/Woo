@@ -1,7 +1,9 @@
 package kaizone.songmaya.woo.fragment.a;
 
 import android.Manifest;
+import android.animation.ObjectAnimator;
 import android.content.Intent;
+import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -18,6 +20,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -125,6 +128,25 @@ public class GouHuaApiDetailTest extends Fragment {
             }
         });
 
+        view.findViewById(R.id.layoutChange).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+//        getView().getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+//            @Override
+//            public void onGlobalLayout() {
+//                Rect rect = new Rect();
+//                getView().getWindowVisibleDisplayFrame(rect);
+//                int rootInvisiableH = getView().getRootView().getHeight() - rect.bottom;
+//                if (rootInvisiableH <= 100) {
+//                    reset();
+//                } else {
+//                    move();
+//                }
+//            }
+//        });
         return view;
     }
 
@@ -287,6 +309,44 @@ public class GouHuaApiDetailTest extends Fragment {
         startActivityForResult(intent, REQUEST_CODE_TAKEPHOTO);
     }
 
+    void move() {
+        if (getView() != null) {
+            Log.e(TAG, String.format("view y=%s,", getView().getY()));
+            ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(getView(), "y", 0, -100);
+            objectAnimator.setDuration(500);
+            objectAnimator.start();
+        }
+    }
+
+    void reset() {
+        if (getView() != null) {
+            Log.e(TAG, String.format("view y=%s,", getView().getY()));
+            ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(getView(), "y", getView().getY(), 0);
+            objectAnimator.setDuration(500);
+            objectAnimator.start();
+        }
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        if (getView() == null)return;
+        getView().getViewTreeObserver().addOnGlobalFocusChangeListener(new ViewTreeObserver.OnGlobalFocusChangeListener() {
+            @Override
+            public void onGlobalFocusChanged(View oldFocus, View newFocus) {
+                Rect rect = new Rect();
+                getView().getWindowVisibleDisplayFrame(rect);
+                int rootInvisiableH = getView().getRootView().getHeight() - rect.bottom;
+                if (rootInvisiableH <= 100) {
+                    reset();
+                } else {
+                    move();
+                }
+            }
+        });
+
+    }
+
     public class TextChangedWatcher implements TextWatcher {
         @Override
         public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -308,12 +368,11 @@ public class GouHuaApiDetailTest extends Fragment {
                 textInputLayout.setCounterMaxLength(100);
             } else if ("appearance".equals(s.toString())) {
                 textInputLayout.setHintTextAppearance(R.style.FloatingStyle);
-            } else if("password".equals(s.toString())){
+            } else if ("password".equals(s.toString())) {
                 textInputLayout.setPasswordVisibilityToggleEnabled(true);
                 textInputLayout.setPasswordVisibilityToggleDrawable(R.mipmap.ic_launcher);
                 textInputLayout.setPasswordVisibilityToggleContentDescription("这是密码");
-            }
-            else if ("false".equals(s.toString())) {
+            } else if ("false".equals(s.toString())) {
                 textInputLayout.setPasswordVisibilityToggleContentDescription("");
                 textInputLayout.setErrorEnabled(false);
                 textInputLayout.setCounterEnabled(false);
