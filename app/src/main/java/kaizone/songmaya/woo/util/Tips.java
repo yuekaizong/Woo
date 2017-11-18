@@ -131,4 +131,11 @@ public class Tips {
                 .setItems(items, listListener).show();
     }
 
+    public static AlertDialog show(View view){
+        return new AlertDialog.Builder(view.getContext())
+                .setView(view)
+                .setNegativeButton("确定", null)
+                .show();
+    }
+
 }

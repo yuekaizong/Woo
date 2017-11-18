@@ -17,4 +17,18 @@
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
+    <declare-styleable name="ContentWithSpaceEditText">
+        <attr name="epaysdk_type" format="enum">
+            <enum name="phone" value="0" />
+            <enum name="card" value="1" />
+            <enum name="IDCard" value="2" />
+        </attr>
+    </declare-styleable>
+
+    <style name="FloatingStyle" parent="@android:style/TextAppearance">
+        <item name="android:textColor">@color/crimson</item>
+        <item name="android:textSize">20sp</item>
+        <item name="android:textColorHint">@color/burlywood</item>
+        <item name="android:textStyle">italic</item>
+    </style>
 </resources>

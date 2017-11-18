@@ -2,6 +2,7 @@ package kaizone.songmaya.woo;
 
 import kaizone.songmaya.woo.fragment.a.DownloadFragment;
 import kaizone.songmaya.woo.fragment.a.GoFragment;
+import kaizone.songmaya.woo.fragment.a.GouHuaApiDetailTest;
 import kaizone.songmaya.woo.fragment.a.GouHuaApiTest;
 import kaizone.songmaya.woo.fragment.a.LocalDetail;
 
@@ -16,6 +17,7 @@ public class AppConfig {
             {DownloadFragment.NAME, ""+DownloadFragment.ID},
             {GoFragment.NAME, ""+GoFragment.ID},
             {LocalDetail.NAME, ""+LocalDetail.ID},
+            {GouHuaApiDetailTest.NAME, ""+GouHuaApiDetailTest.ID},
             {GouHuaApiTest.NAME, ""+GouHuaApiTest.ID}
     };
 }
