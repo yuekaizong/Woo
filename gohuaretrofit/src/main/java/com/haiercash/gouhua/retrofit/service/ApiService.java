@@ -22,6 +22,32 @@ import rx.Observable;
 
 public interface ApiService {
 
+
+    /**
+     *  发送手机验证码
+     * @param phone
+     * @return
+     */
+    @GET("app/appserver/smsSendVerify")
+    Observable<Result> smsSendVerify(@Query("phone")String phone);
+
+    /**
+     * 校验短信验证码
+     * @param map
+     * @return
+     */
+    @POST("app/appserver/smsVerify")
+    Observable<Result> smsVerify(@Body Map map);
+
+    /**
+     * 找回登录密码之修改登录密码
+     * @param map
+     * @return
+     */
+    @POST("/app/appserver/findLoginPwd2Update/needVerify")
+    Observable<Result> findLoginPwd2UpdateneedVerify(@Body Map map);
+
+
     @GET("app/appserver/crm/cust/queryPerCustInfo")
     Observable<Result> queryPerCustInfo(@Query("userId") String name);
 
@@ -67,5 +93,10 @@ public interface ApiService {
     @GET("app/appserver/crm/cust/getCustLoanCodeAndRatCRM")
     Observable<Result> getCustLoanCodeAndRatCRM(@Query("custNo") String custNo,
                                                 @Query("typGrp") String typGrp);
+
+    @GET("app/appserver/token")
+    Observable<Result> token(@Query("client_secret") String client_secret,
+                             @Query("grant_type") String grant_type,
+                             @Query("client_id") String client_id);
 
 }
