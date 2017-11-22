@@ -37,6 +37,7 @@
         <activity
             android:name="kaizone.songmaya.woo.ContainerActivity"
             android:label="@string/title_item_detail"
+            android:windowSoftInputMode="stateHidden"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name="kaizone.songmaya.woo.ItemDetailActivity"

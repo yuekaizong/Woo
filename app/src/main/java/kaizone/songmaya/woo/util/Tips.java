@@ -1,12 +1,20 @@
 
 package kaizone.songmaya.woo.util;
 
+import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Dialog;
+import android.app.DialogFragment;
+import android.app.FragmentManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
+import android.os.Bundle;
+import android.support.v7.view.menu.ActionMenuItem;
 import android.view.View;
 import android.widget.Toast;
+
+import kaizone.songmaya.woo.fragment.MyDialogFragment;
 
 public class Tips {
 
@@ -22,10 +30,14 @@ public class Tips {
     }
 
     public static void toDialog(Context context, String msg) {
-        new AlertDialog.Builder(context)//
-                .setMessage(msg)//
-                .setPositiveButton("确定", null)//
-                .show();
+        if (context instanceof Activity) {
+            FragmentManager fm = ((Activity) context).getFragmentManager();
+            toDialog(fm, msg);
+        }
+    }
+
+    public static void toDialog(FragmentManager fm, String msg) {
+        MyDialogFragment.newInstance(msg).show(fm, msg);
     }
 
     public static void toDialog(Context context, View content) {
@@ -131,7 +143,7 @@ public class Tips {
                 .setItems(items, listListener).show();
     }
 
-    public static AlertDialog show(View view){
+    public static AlertDialog show(View view) {
         return new AlertDialog.Builder(view.getContext())
                 .setView(view)
                 .setNegativeButton("确定", null)

@@ -24,6 +24,29 @@ public interface ApiService {
 
 
     /**
+     * 系统参数列表查询
+     * @param sysTyp
+     * @return
+     */
+    @GET("app/appserver/appmanage/param/selectByParams")
+    Observable<Result> selectByParams(@Query("sysTyp") String sysTyp);
+
+    /**
+     * 检测app版本
+     * @param sysVersion
+     * @param versionType
+     * @param version
+     * @param channelId
+     * @return
+     */
+    @GET("app/appmanage/version/check")
+    Observable<Result<VersionCheck>> versionCheck(@Query("sysVersion") String sysVersion,
+                                                  @Query("versionType") String versionType,
+                                                  @Query("version") String version,
+                                                  @Query("channelId") String channelId);
+
+
+    /**
      *  发送手机验证码
      * @param phone
      * @return
@@ -47,19 +70,161 @@ public interface ApiService {
     @POST("/app/appserver/findLoginPwd2Update/needVerify")
     Observable<Result> findLoginPwd2UpdateneedVerify(@Body Map map);
 
+    /**
+     * 银行列表名称查询
+     * @return
+     */
+    @GET("app/appserver/crm/cust/getBankList")
+    Observable<Result> getBankList();
 
+    /**
+     * 银行卡
+     * @return
+     */
+    @GET("app/appserver/crm/cust/getBankCard")
+    Observable<Result> getBankCard();
+
+    /**
+     * 查询银行卡信息
+     * @param cardNo
+     * @return
+     */
+    @GET("app/appserver/crm/cust/getBankInfo")
+    Observable<Result> getBankInfo(@Query("cardNo")String cardNo);
+
+    /**
+     * 保存银行卡
+     * @param map
+     * @return
+     */
+    @POST("app/appserver/crm/cust/saveBankCard/needVerify")
+    Observable<Result> saveBankCardNeedVerify(@Body Map map);
+
+    /**
+     * 删除银行卡
+     * @param map
+     * @return
+     */
+    @GET("app/appserver/deleteBankCard")
+    Observable<Result> deleteBankCard(@Body Map map);
+
+    /**
+     * 查询默认还款卡
+     * @param map
+     * @return
+     */
+    @GET("app/appserver/crm/cust/getDefaultBankCard")
+    Observable<Result> getDefaultBankCard(@Body Map map);
+
+    /**
+     * 设置默认还款卡
+     * @param map
+     * @return
+     */
+    @PUT("app/appserver/crm/cust/saveDefaultBankCard")
+    Observable<Result> saveDefaultBankCard(@Body Map map);
+
+    /**
+     * 所有银行信息
+     * @return
+     */
+    @GET("app/appserver/crm/cust/getAllBankInfo")
+    Observable<Result> getAllBankInfo();
+
+    /**
+     * 银行卡变更授权书签章
+     * @param map
+     * @return
+     */
+    @GET("app/appserver/bankCardGrant")
+    Observable<Result> bankCardGrant(@Body Map map);
+
+    /**
+     * 字典项查询
+     * @return
+     */
+    @GET("app/appserver/cmis/getDict")
+    Observable<Result> getDict();
+
+    /**
+     * 订单合同确认
+     * @return
+     */
+    @POST("app/appserver/apporder/updateOrderContract")
+    Observable<Result> updateOrderContract();
+
+
+    /**
+     * 修改登录密码（已登录）
+     * @param map
+     * @return
+     */
+    @PUT("app/appserver/loginAndResetPwd")
+    Observable<Result> loginAndResetPwd(@Body Map map);
+
+    /**
+     * 用户注册
+     * @param map
+     * @return
+     */
+    @POST("app/appserver/uauth/saveUauthUsers")
+    Observable<Result> saveUauthUsers(@Body Map map);
+
+    /**
+     * 查询客户编号
+     * @param name
+     * @return
+     */
     @GET("app/appserver/crm/cust/queryPerCustInfo")
     Observable<Result> queryPerCustInfo(@Query("userId") String name);
 
-    @GET("app/appserver/appmanage/param/selectByParams")
-    Observable<Result> selectByParams(@Query("sysTyp") String sysTyp);
+    /**
+     * 找回登录密码之验证客户身份
+     * @param map
+     * @return
+     */
+    @POST("/app/appserver/findLoginPwd2ValidateCustInfo")
+    Observable<Result> findLoginPwd2ValidateCustInfo(@Body Map map);
 
-    @GET("app/appmanage/version/check")
-    Observable<Result<VersionCheck>> versionCheck(@Query("sysVersion") String sysVersion,
-                                                  @Query("versionType") String versionType,
-                                                  @Query("version") String version,
-                                                  @Query("channelId") String channelId);
+    /**
+     * 消息列表查询
+     * @return
+     */
+    @GET("app/appserver/customer/getMessageList")
+    Observable<Result> getMessageList();
 
+    /**
+     * 确认消息已读
+     * @param map
+     * @return
+     */
+    @POST("app/appserver/message/updateMsgStatus")
+    Observable<Result> updateMsgStatus(@Body Map map);
+
+    /**
+     * 帮助信息列表
+     * @param map
+     * @return
+     */
+    @GET("app/appmanage/help/pageByHelpType")
+    Observable<Result> pageByHelpType(@Body Map map);
+
+    /**
+     * 帮助信息详情
+     * @param map
+     * @return
+     */
+    @GET("app/appmanage/help")
+    Observable<Result> help(@Body Map map);
+
+    /**
+     * 版本更新
+     * @param sysVersion
+     * @param versionType
+     * @param version
+     * @param channelId
+     * @return
+     */
     @GET("app/appmanage/version/download")
     Observable<Result> versionDownload(@Query("sysVersion") String sysVersion,
                                        @Query("versionType") String versionType,
@@ -72,6 +237,47 @@ public interface ApiService {
     @GET("app/appserver/uauth/isRegister")
     Observable<Result<IsRegister>> isRegister(@Query("mobile") String mobile);
 
+    /**
+     * 信息完整查询
+     * @param map
+     * @return
+     */
+    @POST("/app/appserver/shh/EDJH/checkIfMsgComplete")
+    Observable<Result> checkIfMsgComplete(@Body Map map);
+
+    /**
+     * 保存身份证信息
+     * @param map
+     * @return
+     */
+    @POST("app/appserver/saveCardMsg")
+    Observable<Result> saveCardMsg(@Body Map map);
+
+    /**
+     * 用户身份证照片路径信息
+     * @param custNo
+     * @return
+     */
+    @GET("/app/appserver/userinfo/fcf/queryUserCertPhotoPath")
+    Observable<Result> saveCardMsg(@Query("custNo") String custNo);
+
+
+    /**
+     * 保存个人扩展信息
+     * @param map
+     * @return
+     */
+    @POST("app/appserver/crm/cust/saveAllCustExtInfo")
+    Observable<Result> saveAllCustExtInfo(@Body Map map);
+
+    /**
+     * 客户编号查询用户信息
+     * @param custNo
+     * @return
+     */
+    @GET("app/appserver/crm/getUserInfoByCustNo")
+    Observable<Result> getUserInfoByCustNo(@Query("custNo") String custNo);
+
 //    @POST("app/appserver/uauth/saveUauthUsers")
 //    Observable<Result> saveUauthUsers(
 //            @Field("verifyNo") String verifyNo,
@@ -79,9 +285,6 @@ public interface ApiService {
 //            @Field("password") String password,
 //            @Field("deviceId") String deviceId
 //    );
-
-    @POST("app/appserver/uauth/saveUauthUsers")
-    Observable<Result> saveUauthUsers(@Body Map map);
 
 //    @FormUrlEncoded
 //    @PUT("app/appserver/customerLogin")

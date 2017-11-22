@@ -1,9 +1,7 @@
 package kaizone.songmaya.woo.fragment.a;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.pm.PackageInfo;
-import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -22,6 +20,7 @@ import com.haiercash.gouhua.retrofit.beans.IsRegister;
 import com.haiercash.gouhua.retrofit.beans.Result;
 import com.haiercash.gouhua.retrofit.beans.VersionCheck;
 import com.haiercash.gouhua.retrofit.service.APIFactory;
+import com.haiercash.gouhua.retrofit.service.ApiBuilder;
 import com.haiercash.gouhua.retrofit.util.HttpUtil;
 import com.haiercash.gouhua.retrofit.util.Persistence;
 import com.haiercash.gouhua.retrofit.util.SubscriberOnNextListenter;
@@ -154,10 +153,9 @@ public class GouHuaApiTest extends Fragment {
                 Tips.toDialog(getContext(), getAnnactionInfo());
                 break;
         }
-        if(obj.contains("GouHuaApiDetail")){
+        if (obj.contains("GouHuaApiDetail")) {
             ContainerActivity.to(getContext(), GouHuaApiDetailTest.ID);
-        }
-        else if (obj.contains("check")) {
+        } else if (obj.contains("check")) {
             versionCheck();
         } else if (obj.contains("download")) {
             versionDownload();
@@ -185,7 +183,7 @@ public class GouHuaApiTest extends Fragment {
             public void next(Result result) {
                 Tips.toDialog(getContext(), result.toString());
             }
-        }, getContext(), "android", "gh", getVersion(), "haiercash");
+        }, getContext(), "android", "gh", "1.2.1", "haiercash");
     }
 
     //版本下载
@@ -200,12 +198,22 @@ public class GouHuaApiTest extends Fragment {
 
     /* 6.102.	(GET) 系统参数列表查询*/
     public void selectByParams() {
-        APIFactory.getInstance().selectByParams(new SubscriberOnNextListenter<Result>() {
-            @Override
-            public void next(Result result) {
+//        APIFactory.getInstance().selectByParams(new SubscriberOnNextListenter<Result>() {
+//            @Override
+//            public void next(Result result) {
+//
+//            }
+//        }, getContext(), "app_Personal");
 
-            }
-        }, getContext(), "app_Personal");
+        new ApiBuilder()
+                .context(getContext())
+                .nextListenter(new SubscriberOnNextListenter<Result>() {
+                    @Override
+                    public void next(Result result) {
+                        Tips.toDialog(getActivity(), result.toString());
+                    }
+                })
+                .selectByParams("app_Personal");
     }
 
     /*查询客户信息*/
@@ -268,7 +276,7 @@ public class GouHuaApiTest extends Fragment {
     public void customerLogin() {
         String type = "login";
         String deviceId = SystemUtils.getDeviceID(getContext());
-        deviceId="862853039717938";
+        deviceId = "862853039717938";
         String userId = "13167066861";
         String deviceType = "AND";
         String userIdEncrypt = EncryptUtil.simpleEncrypt(userId);

@@ -1,2 +1,2 @@
-include ':app', ':gohuaretrofit', ':livedetect'
+include ':app', ':gohuaretrofit', ':livedetect', ':cordovasdk'
 include ':retrofitutil'
