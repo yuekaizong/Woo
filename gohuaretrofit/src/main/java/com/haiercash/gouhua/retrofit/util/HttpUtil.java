@@ -50,16 +50,6 @@ public class HttpUtil {
                 .build();
     }
 
-    private HttpUtil(Context context) {
-        sRetrofit = new Retrofit.Builder()
-                .baseUrl(BASE_URL)
-                .client(getOkHttpClient(context))
-                .addConverterFactory(GsonConverterFactory.create())
-                .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
-                .build();
-    }
-
-
     static public ApiService getApiService() {
         return retrofit.create(ApiService.class);
     }
@@ -165,13 +155,6 @@ public class HttpUtil {
         @Override
         public Response intercept(Chain chain) throws IOException {
             Request.Builder builder = chain.request().newBuilder();
-//            builder.addHeader("Connection", "close")
-//                    .addHeader("APPVersion", "AND-P-" + appVersion(mContext))
-//                    .addHeader("DeviceModel", "AND-P-" + android.os.Build.MODEL)
-//                    .addHeader("DeviceResolution", "AND-P-" + getDeviceWidth(mContext) + "," + getDeviceHeight(mContext))
-//                    .addHeader("SysVersion", "AND-P-" + android.os.Build.VERSION.RELEASE)
-//                    .addHeader("channel", "18")
-//                    .addHeader("channel_no", "42");
             addHeader(mContext, builder);
             if (TokenService.hasToken(chain.request().url().uri().getPath())) {
                 sToken = "7ec6c163-465f-42d8-8b3d-bf751933db98";
@@ -192,7 +175,7 @@ public class HttpUtil {
                 sb.append("client_secret").append("=").append(HttpUtil.sClientSecret).append("&");
                 sb.append("grant_type").append("=").append("client_credentials").append("&");
                 sb.append("client_id").append("=").append(Persistence.clientId(mContext));
-                Request.Builder token_builder = new Request.Builder().get().url(BASE_URL + "/app/appserver/token?"+sb.toString());
+                Request.Builder token_builder = new Request.Builder().get().url(BASE_URL + "/app/appserver/token?" + sb.toString());
                 addHeader(mContext, token_builder);
                 Request token_request = token_builder.build();
                 Response token_response = chain.proceed(token_request);

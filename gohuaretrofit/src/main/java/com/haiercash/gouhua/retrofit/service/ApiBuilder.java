@@ -53,22 +53,30 @@ public class ApiBuilder implements ApiService {
 
     @Override
     public Observable<Result> smsSendVerify(String phone) {
-        return null;
+        Observable<Result> call = HttpUtil.getApiService(context).smsSendVerify(phone);
+        HttpUtil.toSubscribe(call, new ProgressSubscriber<Result>(nextListener, context));
+        return call;
     }
 
     @Override
     public Observable<Result> smsVerify(Map map) {
-        return null;
+        Observable<Result> call = HttpUtil.getApiService(context).smsVerify(map);
+        HttpUtil.toSubscribe(call, new ProgressSubscriber<Result>(nextListener, context));
+        return call;
     }
 
     @Override
     public Observable<Result> findLoginPwd2UpdateneedVerify(Map map) {
-        return null;
+        Observable<Result> call = HttpUtil.getApiService(context).findLoginPwd2UpdateneedVerify(map);
+        HttpUtil.toSubscribe(call, new ProgressSubscriber<Result>(nextListener, context));
+        return call;
     }
 
     @Override
     public Observable<Result> getBankList() {
-        return null;
+        Observable<Result> call = HttpUtil.getApiService(context).getBankList();
+        HttpUtil.toSubscribe(call, new ProgressSubscriber<Result>(nextListener, context));
+        return call;
     }
 
     @Override
@@ -87,132 +95,184 @@ public class ApiBuilder implements ApiService {
 
     @Override
     public Observable<Result> saveBankCardNeedVerify(Map map) {
-        return null;
+        Observable<Result> call = HttpUtil.getApiService(context).saveBankCardNeedVerify(map);
+        HttpUtil.toSubscribe(call, new ProgressSubscriber<Result>(nextListener, context));
+        return call;
     }
 
     @Override
     public Observable<Result> deleteBankCard(Map map) {
-        return null;
+        Observable<Result> call = HttpUtil.getApiService(context).deleteBankCard(map);
+        HttpUtil.toSubscribe(call, new ProgressSubscriber<Result>(nextListener, context));
+        return call;
     }
 
     @Override
     public Observable<Result> getDefaultBankCard(Map map) {
-        return null;
+        Observable<Result> call = HttpUtil.getApiService(context).getDefaultBankCard(map);
+        HttpUtil.toSubscribe(call, new ProgressSubscriber<Result>(nextListener, context));
+        return call;
     }
 
     @Override
     public Observable<Result> saveDefaultBankCard(Map map) {
-        return null;
+        Observable<Result> call = HttpUtil.getApiService(context).saveDefaultBankCard(map);
+        HttpUtil.toSubscribe(call, new ProgressSubscriber<Result>(nextListener, context));
+        return call;
     }
 
     @Override
     public Observable<Result> getAllBankInfo() {
-        return null;
+        Observable<Result> call = HttpUtil.getApiService(context).getAllBankInfo();
+        HttpUtil.toSubscribe(call, new ProgressSubscriber<Result>(nextListener, context));
+        return call;
     }
 
     @Override
     public Observable<Result> bankCardGrant(Map map) {
-        return null;
+        Observable<Result> call = HttpUtil.getApiService(context).bankCardGrant(map);
+        HttpUtil.toSubscribe(call, new ProgressSubscriber<Result>(nextListener, context));
+        return call;
     }
 
     @Override
     public Observable<Result> getDict() {
-        return null;
+        Observable<Result> call = HttpUtil.getApiService(context).getDict();
+        HttpUtil.toSubscribe(call, new ProgressSubscriber<Result>(nextListener, context));
+        return call;
     }
 
     @Override
     public Observable<Result> updateOrderContract() {
-        return null;
+        Observable<Result> call = HttpUtil.getApiService(context).updateOrderContract();
+        HttpUtil.toSubscribe(call, new ProgressSubscriber<Result>(nextListener, context));
+        return call;
     }
 
     @Override
     public Observable<Result> loginAndResetPwd(Map map) {
-        return null;
+        Observable<Result> call = HttpUtil.getApiService(context).loginAndResetPwd(map);
+        HttpUtil.toSubscribe(call, new ProgressSubscriber<Result>(nextListener, context));
+        return call;
     }
 
     @Override
     public Observable<Result> saveUauthUsers(Map map) {
-        return null;
+        Observable<Result> call = HttpUtil.getApiService(context).saveUauthUsers(map);
+        HttpUtil.toSubscribe(call, new ProgressSubscriber<Result>(nextListener, context));
+        return call;
     }
 
     @Override
     public Observable<Result> queryPerCustInfo(String name) {
-        return null;
+        Observable<Result> call = HttpUtil.getApiService(context).queryPerCustInfo(name);
+        HttpUtil.toSubscribe(call, new ProgressSubscriber<Result>(nextListener, context));
+        return call;
     }
 
     @Override
     public Observable<Result> findLoginPwd2ValidateCustInfo(Map map) {
-        return null;
+        Observable<Result> call = HttpUtil.getApiService(context).findLoginPwd2ValidateCustInfo(map);
+        HttpUtil.toSubscribe(call, new ProgressSubscriber<Result>(nextListener, context));
+        return call;
     }
 
     @Override
     public Observable<Result> getMessageList() {
-        return null;
+        Observable<Result> call = HttpUtil.getApiService(context).getMessageList();
+        HttpUtil.toSubscribe(call, new ProgressSubscriber<Result>(nextListener, context));
+        return call;
     }
 
     @Override
     public Observable<Result> updateMsgStatus(Map map) {
-        return null;
+        Observable<Result> call = HttpUtil.getApiService(context).updateMsgStatus(map);
+        HttpUtil.toSubscribe(call, new ProgressSubscriber<Result>(nextListener, context));
+        return call;
     }
 
     @Override
     public Observable<Result> pageByHelpType(Map map) {
-        return null;
+        Observable<Result> call = HttpUtil.getApiService(context).pageByHelpType(map);
+        HttpUtil.toSubscribe(call, new ProgressSubscriber<Result>(nextListener, context));
+        return call;
     }
 
     @Override
     public Observable<Result> help(Map map) {
-        return null;
+        Observable<Result> call = HttpUtil.getApiService(context).help(map);
+        HttpUtil.toSubscribe(call, new ProgressSubscriber<Result>(nextListener, context));
+        return call;
     }
 
     @Override
     public Observable<Result> versionDownload(String sysVersion, String versionType, String version, String channelId) {
-        return null;
+        Observable<Result> call = HttpUtil.getApiService(context).versionDownload(sysVersion, versionType, version, channelId);
+        HttpUtil.toSubscribe(call, new ProgressSubscriber<Result>(nextListener, context));
+        return call;
     }
 
     @Override
     public Observable<Result> getHomePhoto(String sizeType) {
-        return null;
+        Observable<Result> call = HttpUtil.getApiService(context).getHomePhoto(sizeType);
+        HttpUtil.toSubscribe(call, new ProgressSubscriber<Result>(nextListener, context));
+        return call;
     }
 
     @Override
     public Observable<Result<IsRegister>> isRegister(String mobile) {
-        return null;
+        Observable<Result<IsRegister>> call = HttpUtil.getApiService(context).isRegister(mobile);
+        HttpUtil.toSubscribe(call, new ProgressSubscriber<Result<IsRegister>>(nextListener, context));
+        return call;
     }
 
     @Override
     public Observable<Result> checkIfMsgComplete(Map map) {
-        return null;
+        Observable<Result> call = HttpUtil.getApiService(context).checkIfMsgComplete(map);
+        HttpUtil.toSubscribe(call, new ProgressSubscriber<Result>(nextListener, context));
+        return call;
     }
 
     @Override
     public Observable<Result> saveCardMsg(Map map) {
-        return null;
+        Observable<Result> call = HttpUtil.getApiService(context).saveCardMsg(map);
+        HttpUtil.toSubscribe(call, new ProgressSubscriber<Result>(nextListener, context));
+        return call;
     }
 
     @Override
-    public Observable<Result> saveCardMsg(String custNo) {
-        return null;
+    public Observable<Result> queryUserCertPhotoPath(String custNo) {
+        Observable<Result> call = HttpUtil.getApiService(context).queryUserCertPhotoPath(custNo);
+        HttpUtil.toSubscribe(call, new ProgressSubscriber<Result>(nextListener, context));
+        return call;
     }
 
     @Override
     public Observable<Result> saveAllCustExtInfo(Map map) {
-        return null;
+        Observable<Result> call = HttpUtil.getApiService(context).saveAllCustExtInfo(map);
+        HttpUtil.toSubscribe(call, new ProgressSubscriber<Result>(nextListener, context));
+        return call;
     }
 
     @Override
     public Observable<Result> getUserInfoByCustNo(String custNo) {
-        return null;
+        Observable<Result> call = HttpUtil.getApiService(context).getUserInfoByCustNo(custNo);
+        HttpUtil.toSubscribe(call, new ProgressSubscriber<Result>(nextListener, context));
+        return call;
     }
 
     @Override
     public Observable<Result<CustomerLogin>> customerLogin(Map map) {
-        return null;
+        Observable<Result<CustomerLogin>> call = HttpUtil.getApiService(context).customerLogin(map);
+        HttpUtil.toSubscribe(call, new ProgressSubscriber<Result<CustomerLogin>>(nextListener, context));
+        return call;
     }
 
     @Override
     public Observable<Result> getCustLoanCodeAndRatCRM(String custNo, String typGrp) {
-        return null;
+        Observable<Result> call = HttpUtil.getApiService(context).getCustLoanCodeAndRatCRM(custNo, typGrp);
+        HttpUtil.toSubscribe(call, new ProgressSubscriber<Result>(nextListener, context));
+        return call;
     }
 
     @Override

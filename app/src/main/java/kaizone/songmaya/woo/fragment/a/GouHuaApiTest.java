@@ -204,8 +204,10 @@ public class GouHuaApiTest extends Fragment {
             getBankCard();
         } else if (obj.contains("getBankInfo")) {
             getBankInfo();
-        } else if (obj.contains("sToken")) {
+        } else if (obj.contains("token")) {
             token();
+        } else if (obj.contains("getBankList")) {
+            getBankList();
         }
     }
 
@@ -368,6 +370,17 @@ public class GouHuaApiTest extends Fragment {
                     }
                 })
                 .getBankInfo("6226660605524061");
+    }
+
+    private void getBankList() {
+        new ApiBuilder()
+                .context(getContext())
+                .nextListenter(new SubscriberOnNextListener<Entity>() {
+                    @Override
+                    public void next(Entity entity) {
+                        Tips.toDialog(getActivity(), entity.toString());
+                    }
+                }).getBankList();
     }
 
     private void token() {

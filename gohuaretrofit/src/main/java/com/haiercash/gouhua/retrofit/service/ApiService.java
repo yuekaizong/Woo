@@ -300,7 +300,7 @@ public interface ApiService {
      * @return
      */
     @GET("/app/appserver/userinfo/fcf/queryUserCertPhotoPath")
-    Observable<Result> saveCardMsg(@Query("custNo") String custNo);
+    Observable<Result> queryUserCertPhotoPath(@Query("custNo") String custNo);
 
 
     /**
