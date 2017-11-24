@@ -1,4 +1,4 @@
-package kaizone.songmaya.woo.util;
+package com.haiercash.gouhua.retrofit.util;
 
 import android.util.Base64;
 

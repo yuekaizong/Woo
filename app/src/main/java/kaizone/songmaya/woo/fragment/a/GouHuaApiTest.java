@@ -15,15 +15,18 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.haiercash.gouhua.retrofit.annoation.NeedToken;
 import com.haiercash.gouhua.retrofit.beans.CustomerLogin;
+import com.haiercash.gouhua.retrofit.beans.Entity;
 import com.haiercash.gouhua.retrofit.beans.IsRegister;
 import com.haiercash.gouhua.retrofit.beans.Result;
 import com.haiercash.gouhua.retrofit.beans.VersionCheck;
 import com.haiercash.gouhua.retrofit.service.APIFactory;
 import com.haiercash.gouhua.retrofit.service.ApiBuilder;
+import com.haiercash.gouhua.retrofit.util.EncryptUtil;
 import com.haiercash.gouhua.retrofit.util.HttpUtil;
 import com.haiercash.gouhua.retrofit.util.Persistence;
-import com.haiercash.gouhua.retrofit.util.SubscriberOnNextListenter;
+import com.haiercash.gouhua.retrofit.util.SubscriberOnNextListener;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
@@ -34,10 +37,13 @@ import java.util.Map;
 
 import kaizone.songmaya.woo.ContainerActivity;
 import kaizone.songmaya.woo.R;
-import kaizone.songmaya.woo.util.EncryptUtil;
 import kaizone.songmaya.woo.util.RecyclerViewAdapterTemplate;
 import kaizone.songmaya.woo.util.SystemUtils;
 import kaizone.songmaya.woo.util.Tips;
+import retrofit2.http.DELETE;
+import retrofit2.http.GET;
+import retrofit2.http.POST;
+import retrofit2.http.PUT;
 
 
 /**
@@ -116,7 +122,7 @@ public class GouHuaApiTest extends Fragment {
                 for (Annotation annotation : annotations) {
                     info.append(String.format("%s,%s", annotation.annotationType(), annotation.toString())).append(",");
                 }
-                info.append("]");
+                info.append("]").append("\n").append("-------------------------------------").append("\n");
             }
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
@@ -131,15 +137,36 @@ public class GouHuaApiTest extends Fragment {
             Method[] methods = Class.forName(classpath).getMethods();
             for (Method method : methods) {
                 Annotation[] annotations = method.getAnnotations();
+                String uri = null;
                 for (int i = 0; i < annotations.length; i++) {
                     Annotation annotation = annotations[i];
+                    boolean has_token = false;
+                    if (annotation instanceof GET) {
+                        uri = ((GET) annotation).value();
+                    }
+                    if (annotation instanceof POST) {
+                        uri = ((POST) annotation).value();
+                    }
+                    if (annotation instanceof PUT) {
+                        uri = ((PUT) annotation).value();
+                    }
+                    if (annotation instanceof DELETE) {
+                        uri = ((DELETE) annotation).value();
+                    }
+
+                    if (annotation instanceof NeedToken) {
+                        has_token = true;
+                    }
                     String string = annotation.toString();
                     Log.e(TAG, "getAnnactionApiServices: " + string);
                     if (string.contains("value=")) {
                         int subindex = string.lastIndexOf("/");
-                        arrayList.add(string.substring(subindex));
+                        if (subindex > 0) {
+                            arrayList.add(String.format("%s, %s", string.substring(subindex), has_token ? "sToken" : ""));
+                        }
                     }
                 }
+
             }
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
@@ -173,12 +200,18 @@ public class GouHuaApiTest extends Fragment {
             customerLogin();
         } else if (obj.contains("getCustLoanCodeAndRatCRM")) {
             getCustLoanCodeAndRatCRM();
+        } else if (obj.contains("getBankCard")) {
+            getBankCard();
+        } else if (obj.contains("getBankInfo")) {
+            getBankInfo();
+        } else if (obj.contains("sToken")) {
+            token();
         }
     }
 
     //检测版本号
     public void versionCheck() {
-        APIFactory.getInstance().versionCheck(new SubscriberOnNextListenter<Result<VersionCheck>>() {
+        APIFactory.getInstance().versionCheck(new SubscriberOnNextListener<Result<VersionCheck>>() {
             @Override
             public void next(Result result) {
                 Tips.toDialog(getContext(), result.toString());
@@ -188,7 +221,7 @@ public class GouHuaApiTest extends Fragment {
 
     //版本下载
     public void versionDownload() {
-        APIFactory.getInstance().versionDownload(new SubscriberOnNextListenter<Result>() {
+        APIFactory.getInstance().versionDownload(new SubscriberOnNextListener<Result>() {
             @Override
             public void next(Result result) {
                 Tips.toDialog(getContext(), result.toString());
@@ -198,7 +231,7 @@ public class GouHuaApiTest extends Fragment {
 
     /* 6.102.	(GET) 系统参数列表查询*/
     public void selectByParams() {
-//        APIFactory.getInstance().selectByParams(new SubscriberOnNextListenter<Result>() {
+//        APIFactory.getInstance().selectByParams(new SubscriberOnNextListener<Result>() {
 //            @Override
 //            public void next(Result result) {
 //
@@ -207,9 +240,9 @@ public class GouHuaApiTest extends Fragment {
 
         new ApiBuilder()
                 .context(getContext())
-                .nextListenter(new SubscriberOnNextListenter<Result>() {
+                .nextListenter(new SubscriberOnNextListener<Entity>() {
                     @Override
-                    public void next(Result result) {
+                    public void next(Entity result) {
                         Tips.toDialog(getActivity(), result.toString());
                     }
                 })
@@ -218,7 +251,7 @@ public class GouHuaApiTest extends Fragment {
 
     /*查询客户信息*/
     public void queryPerCustInfo() {
-        APIFactory.getInstance().queryPerCustInfo(new SubscriberOnNextListenter<Result>() {
+        APIFactory.getInstance().queryPerCustInfo(new SubscriberOnNextListener<Result>() {
             @Override
             public void next(Result result) {
                 Log.e(TAG, result.toString());
@@ -228,7 +261,7 @@ public class GouHuaApiTest extends Fragment {
 
 
     public void getHomePhoto() {
-        APIFactory.getInstance().getHomePhoto(new SubscriberOnNextListenter<Result>() {
+        APIFactory.getInstance().getHomePhoto(new SubscriberOnNextListener<Result>() {
             @Override
             public void next(Result result) {
                 Tips.toDialog(getContext(), result.toString());
@@ -237,7 +270,7 @@ public class GouHuaApiTest extends Fragment {
     }
 
     public void isRegister() {
-        APIFactory.getInstance().isRegister(new SubscriberOnNextListenter<Result<IsRegister>>() {
+        APIFactory.getInstance().isRegister(new SubscriberOnNextListener<Result<IsRegister>>() {
             @Override
             public void next(Result<IsRegister> result) {
                 Tips.toDialog(getContext(), result.toString());
@@ -259,13 +292,13 @@ public class GouHuaApiTest extends Fragment {
         map.put("password", passwordEncry);
         map.put("deviceId", deviceId);
 
-/*        APIFactory.getInstance().saveUauthUsers(new SubscriberOnNextListenter<Result>() {
+/*        APIFactory.getInstance().saveUauthUsers(new SubscriberOnNextListener<Result>() {
             @Override
             public void next(Result result) {
                 showDialog(result.toString());
             }
         }, getContext(), verifyNo, mobileEncry, passwordEncry, deviceId);*/
-        APIFactory.getInstance().saveUauthUsers(new SubscriberOnNextListenter<Result>() {
+        APIFactory.getInstance().saveUauthUsers(new SubscriberOnNextListener<Result>() {
             @Override
             public void next(Result result) {
                 Tips.toDialog(getContext(), result.toString());
@@ -288,7 +321,7 @@ public class GouHuaApiTest extends Fragment {
         map.put("deviceId", deviceIdEncrypt);
         map.put("userId", userIdEncrypt);
         map.put("password", passwordEncrypt);
-/*        APIFactory.getInstance().customerLogin(new SubscriberOnNextListenter<Result<CustomerLogin>>() {
+/*        APIFactory.getInstance().customerLogin(new SubscriberOnNextListener<Result<CustomerLogin>>() {
                                                    @Override
                                                    public void next(Result<CustomerLogin> result) {
                                                        showDialog(result.toString());
@@ -299,27 +332,68 @@ public class GouHuaApiTest extends Fragment {
                 userIdEncrypt,
                 passwordEncrypt,
                 deviceIdEncrypt);*/
-        APIFactory.getInstance().customerLogin(new SubscriberOnNextListenter<Result<CustomerLogin>>() {
+        APIFactory.getInstance().customerLogin(new SubscriberOnNextListener<Result<CustomerLogin>>() {
                                                    @Override
                                                    public void next(Result<CustomerLogin> result) {
                                                        Tips.toDialog(getContext(), result.toString());
                                                        Persistence.saveCustomerLogin(getContext(), result.body);
 
                                                        CustomerLogin customerLogin = Persistence.getCustomerLogin(getContext());
-                                                       HttpUtil.token = customerLogin.token.access_token;
+                                                       HttpUtil.sToken = customerLogin.token.access_token;
+                                                       HttpUtil.sClientSecret = customerLogin.clientSecret;
                                                        Log.e(TAG, customerLogin.toString());
                                                    }
                                                },
                 getContext(), map);
     }
 
+    private void getBankCard() {
+        new ApiBuilder()
+                .context(getContext())
+                .nextListenter(new SubscriberOnNextListener<Entity>() {
+                    @Override
+                    public void next(Entity result) {
+                        Tips.toDialog(getActivity(), result.toString());
+                    }
+                }).getBankCard("C201710251005773730250");
+    }
+
+    private void getBankInfo() {
+        new ApiBuilder()
+                .context(getContext())
+                .nextListenter(new SubscriberOnNextListener<Entity>() {
+                    @Override
+                    public void next(Entity result) {
+                        Tips.toDialog(getActivity(), result.toString());
+                    }
+                })
+                .getBankInfo("6226660605524061");
+    }
+
+    private void token() {
+        String grant_type = "client_credentials";
+        String userid = "13167066861";
+        String deviceId = "862853039717938";
+        String client_id = EncryptUtil.simpleEncrypt("AND-" + deviceId + "-" + userid);
+
+        new ApiBuilder()
+                .context(getContext())
+                .nextListenter(new SubscriberOnNextListener<Entity>() {
+                    @Override
+                    public void next(Entity result) {
+                        Tips.toDialog(getActivity(), result.toString());
+                    }
+                })
+                .token(HttpUtil.sClientSecret, grant_type, client_id);
+    }
+
     public void getCustLoanCodeAndRatCRM() {
         String custNo = "";
         String typGrp = "02";
-        APIFactory.getInstance().getCustLoanCodeAndRatCRM(new SubscriberOnNextListenter<Result>() {
+        APIFactory.getInstance().getCustLoanCodeAndRatCRM(new SubscriberOnNextListener<Result>() {
             @Override
             public void next(Result result) {
-
+                Tips.toDialog(getActivity(), result.toString());
             }
         }, getContext(), custNo, typGrp);
     }

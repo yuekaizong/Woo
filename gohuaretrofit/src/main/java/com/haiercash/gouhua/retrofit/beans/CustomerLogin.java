@@ -9,7 +9,7 @@ import java.util.List;
  * Created by yuelb on 2017/7/18.
  */
 
-public class CustomerLogin extends Entity{
+public class CustomerLogin extends Entity {
     public String externUid;
     public List<String> deviceIdList;
     public String avatarUrl;
@@ -30,21 +30,7 @@ public class CustomerLogin extends Entity{
     public String isRealInfo;
     public String email;
 
-
-    public static class Token extends Entity{
-        public String access_token;
-        public String token_type;
-        public String refresh_token;
-        public String expires_in;
-        public String scope;
-
-        @Override
-        public String toString() {
-            return ToStringBuilder.reflectionToString(this);
-        }
-    }
-
-    public static class RealInfo implements Serializable{
+    public static class RealInfo implements Serializable {
         public String custNo;
         public String certType;
         public String faceVal;

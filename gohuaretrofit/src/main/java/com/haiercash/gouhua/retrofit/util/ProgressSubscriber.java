@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
 import android.widget.Toast;
 
 import java.net.ConnectException;
@@ -16,30 +15,30 @@ import rx.Subscriber;
 
 public class ProgressSubscriber<T> extends Subscriber<T> implements ProgressCancelListener {
 
-    private SubscriberOnNextListenter mSubscriberOnNextListenter;
+    private SubscriberOnNextListener mSubscriberOnNextListener;
     private SubscriberOnErrorListener mSubscriberOnErrorListener;
     private Context context;
     private ProgressDialogHandler mProgressDialogHandler;
     private ProgressCancelListener mProgressCancelListener;
 
-    public ProgressSubscriber(SubscriberOnNextListenter mSubscriberOnNextListenter, Context context) {
-        this.mSubscriberOnNextListenter = mSubscriberOnNextListenter;
+    public ProgressSubscriber(SubscriberOnNextListener mSubscriberOnNextListener, Context context) {
+        this.mSubscriberOnNextListener = mSubscriberOnNextListener;
         this.context = context;
         if (this.context != null) {
             mProgressDialogHandler = new ProgressDialogHandler(context, this, true);
         }
     }
 
-    public ProgressSubscriber(SubscriberOnNextListenter mSubscriberOnNextListenter, SubscriberOnErrorListener subscriberOnErrorListener, Context context) {
-        this.mSubscriberOnNextListenter = mSubscriberOnNextListenter;
+    public ProgressSubscriber(SubscriberOnNextListener mSubscriberOnNextListener, SubscriberOnErrorListener subscriberOnErrorListener, Context context) {
+        this.mSubscriberOnNextListener = mSubscriberOnNextListener;
         this.mSubscriberOnErrorListener = subscriberOnErrorListener;
         this.context = context;
     }
 
     //设置是否显示进度框
-    public ProgressSubscriber(SubscriberOnNextListenter mSubscriberOnNextListenter, Context context,
+    public ProgressSubscriber(SubscriberOnNextListener mSubscriberOnNextListener, Context context,
                               boolean isShowProgressDialog) {
-        this.mSubscriberOnNextListenter = mSubscriberOnNextListenter;
+        this.mSubscriberOnNextListener = mSubscriberOnNextListener;
         this.context = context;
 
         if (!isShowProgressDialog || context == null) return;
@@ -47,9 +46,9 @@ public class ProgressSubscriber<T> extends Subscriber<T> implements ProgressCanc
     }
 
     //设置进度框取消的回调处理
-    public ProgressSubscriber(SubscriberOnNextListenter mSubscriberOnNextListenter,
+    public ProgressSubscriber(SubscriberOnNextListener mSubscriberOnNextListener,
                               ProgressCancelListener progressCancelListener, Context context) {
-        this.mSubscriberOnNextListenter = mSubscriberOnNextListenter;
+        this.mSubscriberOnNextListener = mSubscriberOnNextListener;
         this.context = context;
 
         mProgressCancelListener = progressCancelListener;
@@ -92,7 +91,7 @@ public class ProgressSubscriber<T> extends Subscriber<T> implements ProgressCanc
 
     @Override
     public void onNext(T t) {
-        mSubscriberOnNextListenter.next(t);
+        mSubscriberOnNextListener.next(t);
     }
 
     @Override

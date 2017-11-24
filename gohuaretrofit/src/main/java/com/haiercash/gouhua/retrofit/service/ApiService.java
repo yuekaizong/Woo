@@ -1,15 +1,17 @@
 package com.haiercash.gouhua.retrofit.service;
 
+import com.haiercash.gouhua.retrofit.annoation.NeedToken;
+import com.haiercash.gouhua.retrofit.beans.BankCard;
+import com.haiercash.gouhua.retrofit.beans.BankInfo;
 import com.haiercash.gouhua.retrofit.beans.CustomerLogin;
 import com.haiercash.gouhua.retrofit.beans.IsRegister;
 import com.haiercash.gouhua.retrofit.beans.Result;
+import com.haiercash.gouhua.retrofit.beans.Token;
 import com.haiercash.gouhua.retrofit.beans.VersionCheck;
 
 import java.util.Map;
 
 import retrofit2.http.Body;
-import retrofit2.http.Field;
-import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
@@ -25,6 +27,7 @@ public interface ApiService {
 
     /**
      * 系统参数列表查询
+     *
      * @param sysTyp
      * @return
      */
@@ -33,6 +36,7 @@ public interface ApiService {
 
     /**
      * 检测app版本
+     *
      * @param sysVersion
      * @param versionType
      * @param version
@@ -47,15 +51,17 @@ public interface ApiService {
 
 
     /**
-     *  发送手机验证码
+     * 发送手机验证码
+     *
      * @param phone
      * @return
      */
     @GET("app/appserver/smsSendVerify")
-    Observable<Result> smsSendVerify(@Query("phone")String phone);
+    Observable<Result> smsSendVerify(@Query("phone") String phone);
 
     /**
      * 校验短信验证码
+     *
      * @param map
      * @return
      */
@@ -64,6 +70,7 @@ public interface ApiService {
 
     /**
      * 找回登录密码之修改登录密码
+     *
      * @param map
      * @return
      */
@@ -72,6 +79,7 @@ public interface ApiService {
 
     /**
      * 银行列表名称查询
+     *
      * @return
      */
     @GET("app/appserver/crm/cust/getBankList")
@@ -79,53 +87,66 @@ public interface ApiService {
 
     /**
      * 银行卡
+     *
      * @return
      */
+    @NeedToken
     @GET("app/appserver/crm/cust/getBankCard")
-    Observable<Result> getBankCard();
+    Observable<Result<BankCard>> getBankCard(@Query("custNo") String custNo);
 
     /**
      * 查询银行卡信息
+     *
      * @param cardNo
      * @return
      */
+    @NeedToken
     @GET("app/appserver/crm/cust/getBankInfo")
-    Observable<Result> getBankInfo(@Query("cardNo")String cardNo);
+    Observable<Result<BankInfo>> getBankInfo(@Query("cardNo") String cardNo);
 
     /**
      * 保存银行卡
+     *
      * @param map
      * @return
      */
+    @NeedToken
     @POST("app/appserver/crm/cust/saveBankCard/needVerify")
     Observable<Result> saveBankCardNeedVerify(@Body Map map);
 
     /**
      * 删除银行卡
+     *
      * @param map
      * @return
      */
+    @NeedToken
     @GET("app/appserver/deleteBankCard")
     Observable<Result> deleteBankCard(@Body Map map);
 
     /**
      * 查询默认还款卡
+     *
      * @param map
      * @return
      */
+    @NeedToken
     @GET("app/appserver/crm/cust/getDefaultBankCard")
     Observable<Result> getDefaultBankCard(@Body Map map);
 
     /**
      * 设置默认还款卡
+     *
      * @param map
      * @return
      */
+    @NeedToken
     @PUT("app/appserver/crm/cust/saveDefaultBankCard")
     Observable<Result> saveDefaultBankCard(@Body Map map);
 
     /**
      * 所有银行信息
+     *
      * @return
      */
     @GET("app/appserver/crm/cust/getAllBankInfo")
@@ -133,14 +154,17 @@ public interface ApiService {
 
     /**
      * 银行卡变更授权书签章
+     *
      * @param map
      * @return
      */
+    @NeedToken
     @GET("app/appserver/bankCardGrant")
     Observable<Result> bankCardGrant(@Body Map map);
 
     /**
      * 字典项查询
+     *
      * @return
      */
     @GET("app/appserver/cmis/getDict")
@@ -148,22 +172,27 @@ public interface ApiService {
 
     /**
      * 订单合同确认
+     *
      * @return
      */
+    @NeedToken
     @POST("app/appserver/apporder/updateOrderContract")
     Observable<Result> updateOrderContract();
 
 
     /**
      * 修改登录密码（已登录）
+     *
      * @param map
      * @return
      */
+    @NeedToken
     @PUT("app/appserver/loginAndResetPwd")
     Observable<Result> loginAndResetPwd(@Body Map map);
 
     /**
      * 用户注册
+     *
      * @param map
      * @return
      */
@@ -172,22 +201,27 @@ public interface ApiService {
 
     /**
      * 查询客户编号
+     *
      * @param name
      * @return
      */
+    @NeedToken
     @GET("app/appserver/crm/cust/queryPerCustInfo")
     Observable<Result> queryPerCustInfo(@Query("userId") String name);
 
     /**
      * 找回登录密码之验证客户身份
+     *
      * @param map
      * @return
      */
+    @NeedToken
     @POST("/app/appserver/findLoginPwd2ValidateCustInfo")
     Observable<Result> findLoginPwd2ValidateCustInfo(@Body Map map);
 
     /**
      * 消息列表查询
+     *
      * @return
      */
     @GET("app/appserver/customer/getMessageList")
@@ -195,6 +229,7 @@ public interface ApiService {
 
     /**
      * 确认消息已读
+     *
      * @param map
      * @return
      */
@@ -203,6 +238,7 @@ public interface ApiService {
 
     /**
      * 帮助信息列表
+     *
      * @param map
      * @return
      */
@@ -211,6 +247,7 @@ public interface ApiService {
 
     /**
      * 帮助信息详情
+     *
      * @param map
      * @return
      */
@@ -219,6 +256,7 @@ public interface ApiService {
 
     /**
      * 版本更新
+     *
      * @param sysVersion
      * @param versionType
      * @param version
@@ -239,6 +277,7 @@ public interface ApiService {
 
     /**
      * 信息完整查询
+     *
      * @param map
      * @return
      */
@@ -247,6 +286,7 @@ public interface ApiService {
 
     /**
      * 保存身份证信息
+     *
      * @param map
      * @return
      */
@@ -255,6 +295,7 @@ public interface ApiService {
 
     /**
      * 用户身份证照片路径信息
+     *
      * @param custNo
      * @return
      */
@@ -264,6 +305,7 @@ public interface ApiService {
 
     /**
      * 保存个人扩展信息
+     *
      * @param map
      * @return
      */
@@ -272,6 +314,7 @@ public interface ApiService {
 
     /**
      * 客户编号查询用户信息
+     *
      * @param custNo
      * @return
      */
@@ -298,8 +341,8 @@ public interface ApiService {
                                                 @Query("typGrp") String typGrp);
 
     @GET("app/appserver/token")
-    Observable<Result> token(@Query("client_secret") String client_secret,
-                             @Query("grant_type") String grant_type,
-                             @Query("client_id") String client_id);
+    Observable<Token> token(@Query("client_secret") String client_secret,
+                            @Query("grant_type") String grant_type,
+                            @Query("client_id") String client_id);
 
 }

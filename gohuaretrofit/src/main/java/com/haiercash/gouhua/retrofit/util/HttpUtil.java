@@ -6,22 +6,26 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.WindowManager;
 
+import com.haiercash.gouhua.retrofit.beans.Token;
 import com.haiercash.gouhua.retrofit.service.ApiService;
+import com.haiercash.gouhua.retrofit.service.TokenService;
+
+import org.json.JSONObject;
 
 import java.io.IOException;
-import java.io.StringReader;
 import java.util.concurrent.TimeUnit;
 
+import okhttp3.HttpUrl;
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
+import okhttp3.internal.http.HttpMethod;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 import rx.Observable;
 import rx.Subscriber;
-import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
 
@@ -30,7 +34,8 @@ public class HttpUtil {
     private static Retrofit retrofit;
     private static Retrofit sRetrofit;
     private static HttpUtil httpUtil = new HttpUtil();
-    public static String token;
+    public static String sToken;
+    public static String sClientSecret;
 
     private static final String BASE_URL = "http://10.164.194.121:9000/"; //测试环境
 //    private static final String BASE_URL = "http://10.164.194.121/"; //封试环境
@@ -82,7 +87,7 @@ public class HttpUtil {
     }
 
 
-    private final static long DEFAULT_TIMEOUT = 10;
+    private final static long DEFAULT_TIMEOUT = 20;
 
     private OkHttpClient getOkHttpClient() {
         //定制OkHttp
@@ -140,6 +145,16 @@ public class HttpUtil {
         }
     }
 
+    public static void addHeader(Context context, Request.Builder builder) {
+        builder.addHeader("Connection", "close")
+                .addHeader("APPVersion", "AND-P-" + appVersion(context))
+                .addHeader("DeviceModel", "AND-P-" + android.os.Build.MODEL)
+                .addHeader("DeviceResolution", "AND-P-" + getDeviceWidth(context) + "," + getDeviceHeight(context))
+                .addHeader("SysVersion", "AND-P-" + android.os.Build.VERSION.RELEASE)
+                .addHeader("channel", "18")
+                .addHeader("channel_no", "42");
+    }
+
     private static class MyInterceptor implements Interceptor {
         Context mContext;
 
@@ -150,25 +165,60 @@ public class HttpUtil {
         @Override
         public Response intercept(Chain chain) throws IOException {
             Request.Builder builder = chain.request().newBuilder();
-            builder.addHeader("Connection", "close")
-                    .addHeader("APPVersion", "AND-P-" + appVersion(mContext))
-                    .addHeader("DeviceModel", "AND-P-" + android.os.Build.MODEL)
-                    .addHeader("DeviceResolution", "AND-P-" + getDeviceWidth(mContext) + "," + getDeviceHeight(mContext))
-                    .addHeader("SysVersion", "AND-P-" + android.os.Build.VERSION.RELEASE)
-                    .addHeader("channel", "18")
-                    .addHeader("channel_no", "42");
-            if (token != null) {
-                builder.addHeader("Authorization", "Bearer" + token)
-                        .addHeader("access_token", token);
+//            builder.addHeader("Connection", "close")
+//                    .addHeader("APPVersion", "AND-P-" + appVersion(mContext))
+//                    .addHeader("DeviceModel", "AND-P-" + android.os.Build.MODEL)
+//                    .addHeader("DeviceResolution", "AND-P-" + getDeviceWidth(mContext) + "," + getDeviceHeight(mContext))
+//                    .addHeader("SysVersion", "AND-P-" + android.os.Build.VERSION.RELEASE)
+//                    .addHeader("channel", "18")
+//                    .addHeader("channel_no", "42");
+            addHeader(mContext, builder);
+            if (TokenService.hasToken(chain.request().url().uri().getPath())) {
+                sToken = "7ec6c163-465f-42d8-8b3d-bf751933db98";
+                builder.addHeader("Authorization", "Bearer" + sToken)
+                        .addHeader("access_token", sToken);
             }
             Request request = builder.build();
             Response response = chain.proceed(request);
-            long peekBodySize = 1024*1024;
+            long peekBodySize = 1024 * 1024;
             byte[] clone = response.peekBody(peekBodySize).bytes();
             Log.e(TAG, String.format("intercept: request url=%s, method=%s", request.url(), request.method()));
             String body = new String(clone);
             final int bodylength = body.getBytes().length;
             Log.e(TAG, String.format("intercept: response body =%s >>>body length=%s", body, bodylength));
+            //token失效
+            if (body.contains("error") && (body.contains("invalid_token"))) {
+                StringBuilder sb = new StringBuilder();
+                sb.append("client_secret").append("=").append(HttpUtil.sClientSecret).append("&");
+                sb.append("grant_type").append("=").append("client_credentials").append("&");
+                sb.append("client_id").append("=").append(Persistence.clientId(mContext));
+                Request.Builder token_builder = new Request.Builder().get().url(BASE_URL + "/app/appserver/token?"+sb.toString());
+                addHeader(mContext, token_builder);
+                Request token_request = token_builder.build();
+                Response token_response = chain.proceed(token_request);
+                body = token_response.body().string();
+                try {
+                    JSONObject object = new JSONObject(body);
+                    Token token = new Token();
+                    token.access_token = object.optString("access_token");
+                    token.token_type = object.optString("token_type");
+                    token.bearer = object.optString("bearer");
+                    token.expires_in = object.optString("expires_in");
+                    token.refresh_token = object.optString("refresh_token");
+                    token.scope = object.optString("scope");
+                    sToken = token.access_token;
+                    Persistence.setToken(mContext, token);
+
+                    request = builder
+                            .removeHeader("Authorization").removeHeader("access_token")
+                            .addHeader("Authorization", "Bearer" + sToken)
+                            .addHeader("access_token", sToken)
+                            .build();
+                    response = chain.proceed(request);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
             return response;
         }
     }

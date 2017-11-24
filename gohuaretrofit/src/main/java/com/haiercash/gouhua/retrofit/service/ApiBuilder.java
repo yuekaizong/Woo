@@ -2,13 +2,17 @@ package com.haiercash.gouhua.retrofit.service;
 
 import android.content.Context;
 
+import com.haiercash.gouhua.retrofit.beans.BankCard;
+import com.haiercash.gouhua.retrofit.beans.BankInfo;
 import com.haiercash.gouhua.retrofit.beans.CustomerLogin;
+import com.haiercash.gouhua.retrofit.beans.Entity;
 import com.haiercash.gouhua.retrofit.beans.IsRegister;
 import com.haiercash.gouhua.retrofit.beans.Result;
+import com.haiercash.gouhua.retrofit.beans.Token;
 import com.haiercash.gouhua.retrofit.beans.VersionCheck;
 import com.haiercash.gouhua.retrofit.util.HttpUtil;
 import com.haiercash.gouhua.retrofit.util.ProgressSubscriber;
-import com.haiercash.gouhua.retrofit.util.SubscriberOnNextListenter;
+import com.haiercash.gouhua.retrofit.util.SubscriberOnNextListener;
 
 import java.util.Map;
 
@@ -21,29 +25,29 @@ import rx.Observable;
 public class ApiBuilder implements ApiService {
 
     private Context context;
-    private SubscriberOnNextListenter<Result> nextListenter;
+    private SubscriberOnNextListener<Entity> nextListener;
 
     public ApiBuilder context(Context context) {
         this.context = context;
         return this;
     }
 
-    public ApiBuilder nextListenter(SubscriberOnNextListenter<Result> nextListenter) {
-        this.nextListenter = nextListenter;
+    public ApiBuilder nextListenter(SubscriberOnNextListener<Entity> nextListenter) {
+        this.nextListener = nextListenter;
         return this;
     }
 
     @Override
     public Observable<Result> selectByParams(String sysTyp) {
         Observable<Result> call = HttpUtil.getApiService(context).selectByParams(sysTyp);
-        HttpUtil.toSubscribe(call, new ProgressSubscriber<Result>(nextListenter, context));
+        HttpUtil.toSubscribe(call, new ProgressSubscriber<Result>(nextListener, context));
         return call;
     }
 
     @Override
     public Observable<Result<VersionCheck>> versionCheck(String sysVersion, String versionType, String version, String channelId) {
         Observable<Result<VersionCheck>> call = HttpUtil.getApiService(context).versionCheck(sysVersion, versionType, version, channelId);
-        HttpUtil.toSubscribe(call, new ProgressSubscriber<Result<VersionCheck>>(nextListenter, context));
+        HttpUtil.toSubscribe(call, new ProgressSubscriber<Result<VersionCheck>>(nextListener, context));
         return call;
     }
 
@@ -68,13 +72,17 @@ public class ApiBuilder implements ApiService {
     }
 
     @Override
-    public Observable<Result> getBankCard() {
-        return null;
+    public Observable<Result<BankCard>> getBankCard(String custNo) {
+        Observable<Result<BankCard>> call = HttpUtil.getApiService(context).getBankCard(custNo);
+        HttpUtil.toSubscribe(call, new ProgressSubscriber<Result<BankCard>>(nextListener, context));
+        return call;
     }
 
     @Override
-    public Observable<Result> getBankInfo(String cardNo) {
-        return null;
+    public Observable<Result<BankInfo>> getBankInfo(String cardNo) {
+        Observable<Result<BankInfo>> call = HttpUtil.getApiService(context).getBankInfo(cardNo);
+        HttpUtil.toSubscribe(call, new ProgressSubscriber<Result<BankInfo>>(nextListener, context));
+        return call;
     }
 
     @Override
@@ -208,7 +216,9 @@ public class ApiBuilder implements ApiService {
     }
 
     @Override
-    public Observable<Result> token(String client_secret, String grant_type, String client_id) {
-        return null;
+    public Observable<Token> token(String client_secret, String grant_type, String client_id) {
+        Observable<Token> call = HttpUtil.getApiService(context).token(client_secret, grant_type, client_id);
+        HttpUtil.toSubscribe(call, new ProgressSubscriber<Token>(nextListener, context));
+        return call;
     }
 }

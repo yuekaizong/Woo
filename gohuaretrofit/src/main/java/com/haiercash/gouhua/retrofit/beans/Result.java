@@ -9,6 +9,7 @@ import org.w3c.dom.Text;
  */
 
 public class Result<T> extends Entity{
+
     public Head head;
     public T body;
 

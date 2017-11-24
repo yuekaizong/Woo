@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.util.Log;
 
 import com.haiercash.gouhua.retrofit.beans.CustomerLogin;
+import com.haiercash.gouhua.retrofit.beans.Token;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -24,7 +25,7 @@ public class Persistence {
      * 登录相关信息
      */
     public static String login = "LOGIN";
-    public static String login_clientsercert = "clientSecret";//请求token用
+    public static String login_clientsercert = "sClientSecret";//请求token用
     public static String login_userid = "userId";//用户id
     public static String login_inputid = "inputId";//用户手输的id
     public static String login_mobile = "login_mobile";//绑定手机号
@@ -133,6 +134,21 @@ public class Persistence {
         if(string == null) return null;
         return decodeCustomerLogin(string);
     }
+
+    public static void setToken(Context context, Token token){
+        CustomerLogin user = getCustomerLogin(context);
+        user.token = token;
+        saveCustomerLogin(context, user);
+    }
+
+    public static String clientId(Context context){
+        CustomerLogin obj = getCustomerLogin(context);
+        String userId = obj.userId;
+        String deviceId = obj.deviceId;
+        return EncryptUtil.simpleEncrypt("AND-" + deviceId + "-" + userId);
+    }
+
+
 
     public static String encodeCustomerLogin(CustomerLogin obj){
         if (obj == null)

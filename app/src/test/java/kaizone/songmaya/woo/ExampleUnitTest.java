@@ -1,14 +1,15 @@
 package kaizone.songmaya.woo;
 
-import com.haiercash.gouhua.retrofit.beans.Result;
-import com.haiercash.gouhua.retrofit.service.APIFactory;
-import com.haiercash.gouhua.retrofit.util.SubscriberOnNextListenter;
+import com.haiercash.gouhua.retrofit.annoation.NeedToken;
+import com.haiercash.gouhua.retrofit.service.ApiService;
 
 import org.junit.Test;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Method;
 import java.net.HttpURLConnection;
 import java.net.InetSocketAddress;
 import java.net.URL;
@@ -17,13 +18,18 @@ import java.nio.CharBuffer;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
 import java.nio.channels.SocketChannel;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import kaizone.songmaya.woo.util.AESUtil;
 import kaizone.songmaya.woo.util.DES;
-import kaizone.songmaya.woo.util.SecretTool;
+import retrofit2.http.DELETE;
+import retrofit2.http.GET;
+import retrofit2.http.POST;
+import retrofit2.http.PUT;
 
 import static org.junit.Assert.*;
 
@@ -34,13 +40,52 @@ import static org.junit.Assert.*;
  */
 public class ExampleUnitTest {
 
-    public String api1="https://suggest.taobao.com/sug?code=utf-8&q='女装'callback=cb";
-    public String api2="http://gc.ditu.aliyun.com/regeocoding?l=39.938133,116.395739&type=001";
-    public String api3="http://tcc.taobao.com/cc/json/mobile_tel_segment.htm?tel=13167066861";
+    public String api1 = "https://suggest.taobao.com/sug?code=utf-8&q='女装'callback=cb";
+    public String api2 = "http://gc.ditu.aliyun.com/regeocoding?l=39.938133,116.395739&type=001";
+    public String api3 = "http://tcc.taobao.com/cc/json/mobile_tel_segment.htm?tel=13167066861";
+
     @Test
     public void addition_isCorrect() throws Exception {
         assertEquals(4, 2 + 2);
     }
+
+    @Test
+    public List getTokenAnnotationUri() throws Exception {
+        String classpath = "com.haiercash.gouhua.retrofit.service.ApiService";
+        classpath = ApiService.class.getName();
+        ArrayList tokens = new ArrayList();
+        Method[] methods = Class.forName(classpath).getMethods();
+        for (Method method : methods) {
+            Annotation[] annotations = method.getAnnotations();
+            String uri = null;
+            boolean has_token = false;
+            for (int i = 0; i < annotations.length; i++) {
+                Annotation annotation = annotations[i];
+                if (annotation instanceof GET) {
+                    uri = ((GET) annotation).value();
+                }
+                if (annotation instanceof retrofit2.http.POST) {
+                    uri = ((POST) annotation).value();
+                }
+                if (annotation instanceof PUT) {
+                    uri = ((PUT) annotation).value();
+                }
+                if (annotation instanceof DELETE) {
+                    uri = ((DELETE) annotation).value();
+                }
+
+                if (annotation instanceof NeedToken) {
+                    has_token = true;
+                }
+            }
+            if (has_token) {
+                tokens.add(uri);
+            }
+            System.out.println(String.format("%s, %s", uri, has_token ? "sToken" : ""));
+        }
+        return tokens;
+    }
+
 
     static String HOST = "14.215.177.37";
     static int POST = 80;
@@ -48,7 +93,7 @@ public class ExampleUnitTest {
     @Test
     public void httpTest() throws Exception {
         Map map = new HashMap<>();
-        map.put("key","app_Personal");
+        map.put("key", "app_Personal");
 
 //        URL url = new URL("http://10.164.194.121:9000/app/appserver/appmanage/param/selectByParams");
         URL url = new URL("https://shop.haiercash.com/app/appserver/appmanage/param/selectByParams");
@@ -61,15 +106,15 @@ public class ExampleUnitTest {
         // conn.setConnectTimeout(10000);//连接超时 单位毫秒
         // conn.setReadTimeout(2000);//读取超时 单位毫秒
         conn.setDoOutput(true);// 是否输入参数
-        conn.setRequestProperty("Connection","close");
-        conn.setRequestProperty("APPVersion","IOS-P-1.0.0");
-        conn.setRequestProperty("DeviceModel","IOS-P-BLN-AL10");
+        conn.setRequestProperty("Connection", "close");
+        conn.setRequestProperty("APPVersion", "IOS-P-1.0.0");
+        conn.setRequestProperty("DeviceModel", "IOS-P-BLN-AL10");
         conn.setRequestProperty("DeviceResolution", "IOS-P-1080,1812");
         conn.setRequestProperty("SysVersion", "IOS-P-7.0");
-        conn.setRequestProperty("channel","18");
-        conn.setRequestProperty("channel_no","42");
+        conn.setRequestProperty("channel", "18");
+        conn.setRequestProperty("channel_no", "42");
 
-        conn.setRequestProperty("Accept","text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8");
+        conn.setRequestProperty("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8");
         conn.setRequestProperty("Accept-Encoding", "gzip, deflate");
         conn.setRequestProperty("Accept-Language", "zh-CN,zh;q=0.8");
         conn.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.90 Safari/537.36");
@@ -135,7 +180,7 @@ public class ExampleUnitTest {
                     }
                 }
             } else if (key.isReadable()) {
-                ByteBuffer byteBuffer = ByteBuffer.allocate(10*1024);
+                ByteBuffer byteBuffer = ByteBuffer.allocate(10 * 1024);
                 channel.read(byteBuffer);
                 //回绕缓冲区
                 byteBuffer.flip();
@@ -151,7 +196,7 @@ public class ExampleUnitTest {
     }
 
     @Test
-    public void secretToolTest() throws Exception{
+    public void secretToolTest() throws Exception {
         String source = "This is for DES test";
         String password = "1234567890qwerty";
         String temp = AESUtil.simpleEncrypt(source, password);
