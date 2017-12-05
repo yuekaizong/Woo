@@ -30,7 +30,7 @@ var app = {
         this.receivedEvent('deviceready');
         document.addEventListener('batterystatus', onBatteryStatus, false);
         document.addEventListener("volumeupbutton", callbackFuntion, false);
-        document.addEventListener("backbutton", onBackKeyDown, false);
+//        document.addEventListener("backbutton", onBackKeyDown, false);
 
         document.getElementById('cameraTakePicture').addEventListener('click', cameraTakePicture);
         document.getElementById('cameraGetPicture').addEventListener('click', cameraGetPicture);
@@ -65,10 +65,16 @@ document.getElementById("removeProjectFromLocalStorage").addEventListener("click
 document.getElementById("getLocalStorageByKey").addEventListener("click", getLocalStorageByKey);
 
 document.getElementById("getOrientation").addEventListener("click", getOrientation);
-
 document.getElementById("createContact").addEventListener("click", createContact);
 var localStorage = window.localStorage;
 var count = 0;
+
+document.getElementById('demo1').addEventListener('click', demo1);
+
+function demo1(){
+//  testPlugin.testPluginFunction("HelloWorld");
+         window.cordova.exec(null, null, 'TestPlugin', 'testPluginFunction', null);
+}
 
 function setLocalStorage() {
     if (!localStorage.getItem("Name")) {

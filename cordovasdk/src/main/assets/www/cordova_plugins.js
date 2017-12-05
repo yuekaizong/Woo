@@ -164,6 +164,14 @@ module.exports = [
         "clobbers": [
             "navigator.compass"
         ]
+    },
+    {
+        "id": "cordova-plugin-Test.TestPlugin",
+        "file": "plugins/cordova-plugin-Test/www/testDemo.js",
+        "pluginId": "cordova-plugin-Test",
+        "clobbers": [
+            "testPlugin"
+        ]
     }
 ];
 module.exports.metadata = 
