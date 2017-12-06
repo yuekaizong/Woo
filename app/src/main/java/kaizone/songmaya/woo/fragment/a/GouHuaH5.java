@@ -1,5 +1,7 @@
 package kaizone.songmaya.woo.fragment.a;
 
+import android.Manifest;
+import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -17,7 +19,11 @@ import android.webkit.WebView;
 import android.widget.Button;
 import android.widget.TextView;
 
+import org.json.JSONArray;
+
 import kaizone.songmaya.woo.R;
+import kaizone.songmaya.woo.util.SystemUtils;
+import kaizone.songmaya.woo.util.contact.ContactManager;
 
 /**
  * Created by Kaizo on 2017/12/5.
@@ -75,7 +81,7 @@ public class GouHuaH5 extends Fragment implements View.OnClickListener {
         settings.setLoadsImagesAutomatically(true); //支持自动加载图片
         settings.setDefaultTextEncodingName("utf-8");//设置编码格式
 
-        mContent.addJavascriptInterface(new JsBridge(), "androidController");
+        mContent.addJavascriptInterface(new JsBridge(getContext()), "androidController");
         mContent.loadUrl("http://10.164.17.113:8080/index.html");
         mContent.setWebChromeClient(new WebChromeClient());
 
@@ -84,9 +90,24 @@ public class GouHuaH5 extends Fragment implements View.OnClickListener {
 
     private class JsBridge {
 
+        private Context context;
+
+        public JsBridge(Context context) {
+            this.context = context;
+        }
+
         @JavascriptInterface
-        public void live() {
+        public void liveDetect() {
             Log.e(NAME, "jsController live");
+        }
+
+        @JavascriptInterface
+        public void contacts() {
+            if (SystemUtils.checkHasPermission(getActivity(), Manifest.permission.READ_CONTACTS)) {
+                ContactManager contactManager = new ContactManager(GouHuaH5.this);
+                JSONArray jsonArray = contactManager.sreach();
+                Log.e(NAME, jsonArray.toString());
+            }
         }
     }
 
