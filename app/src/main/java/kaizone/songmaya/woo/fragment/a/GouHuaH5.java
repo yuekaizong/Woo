@@ -2,6 +2,7 @@ package kaizone.songmaya.woo.fragment.a;
 
 import android.Manifest;
 import android.content.Context;
+import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -20,9 +21,16 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
+import java.util.ArrayList;
+
+import kaizone.songmaya.baidulbs.LbsManager;
+import kaizone.songmaya.baidulbs.entity.LocationInfo;
 import kaizone.songmaya.woo.R;
 import kaizone.songmaya.woo.util.SystemUtils;
+import kaizone.songmaya.woo.util.Tips;
 import kaizone.songmaya.woo.util.contact.ContactManager;
 
 /**
@@ -47,6 +55,8 @@ public class GouHuaH5 extends Fragment implements View.OnClickListener {
 
     Button button1;
     Button button2;
+
+    JsBridge jsBridge;
 
     @Nullable
     @Override
@@ -80,33 +90,103 @@ public class GouHuaH5 extends Fragment implements View.OnClickListener {
 //        settings.setJavaScriptCanOpenWindowsAutomatically(true); //支持通过JS打开新窗口
         settings.setLoadsImagesAutomatically(true); //支持自动加载图片
         settings.setDefaultTextEncodingName("utf-8");//设置编码格式
-
-        mContent.addJavascriptInterface(new JsBridge(getContext()), "androidController");
+        jsBridge = new JsBridge(this, mContent);
+        mContent.addJavascriptInterface(jsBridge, "bridge");
         mContent.loadUrl("http://10.164.17.113:8080/index.html");
         mContent.setWebChromeClient(new WebChromeClient());
 
         return view;
     }
 
-    private class JsBridge {
+    private static class JsBridge {
 
-        private Context context;
+        private Fragment fragment;
+        private WebView webView;
 
-        public JsBridge(Context context) {
-            this.context = context;
+        public JsBridge(Fragment context, WebView webView) {
+            this.fragment = context;
+            this.webView = webView;
         }
 
         @JavascriptInterface
         public void liveDetect() {
             Log.e(NAME, "jsController live");
+            liveDetectSuccess();
+        }
+
+        public void liveDetectSuccess() {
+            JSONArray array = new JSONArray();
+            jsBackCall("liveDetect", "success", array);
         }
 
         @JavascriptInterface
         public void contacts() {
-            if (SystemUtils.checkHasPermission(getActivity(), Manifest.permission.READ_CONTACTS)) {
-                ContactManager contactManager = new ContactManager(GouHuaH5.this);
-                JSONArray jsonArray = contactManager.sreach();
-                Log.e(NAME, jsonArray.toString());
+            if (SystemUtils.checkHasPermission(fragment.getActivity(), Manifest.permission.READ_CONTACTS)) {
+                ContactManager contactManager = new ContactManager(fragment);
+                JSONArray jsonArray = contactManager.search();
+                contactsSuccess(jsonArray);
+            }
+        }
+
+        public void contactsSuccess(JSONArray jsonArray) {
+            jsBackCall("contacts", "success", jsonArray);
+        }
+
+        @JavascriptInterface
+        public void lbs() {
+            if (SystemUtils.checkHasPermission(fragment.getActivity(), Manifest.permission.ACCESS_FINE_LOCATION)) {
+                LbsManager lbsManager = new LbsManager(fragment.getActivity());
+                lbsManager.startLocation(new LbsManager.OnLocationListener() {
+                    @Override
+                    public void onErr(String retFlag, String reason) {
+                        Log.e(NAME, retFlag + reason);
+                    }
+
+                    @Override
+                    public void onSuccess(Object response) {
+                        if (response instanceof LocationInfo) {
+                            LocationInfo info = (LocationInfo) response;
+                            JSONArray body = new JSONArray();
+                            JSONObject item = new JSONObject();
+                            try {
+                                item.put("address", info.getAddressStr());
+                                item.put("latitude", info.getLatitude());
+                                item.put("longitude", info.getLongitude());
+                                body.put(item);
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                            lbsSuccess(body);
+                        }
+                    }
+                });
+            }
+        }
+
+        public void lbsSuccess(JSONArray body) {
+            jsBackCall("lbs", "success", body);
+        }
+
+        public void jsBackCall(String action, String status, JSONArray body) {
+            JSONObject result = new JSONObject();
+            try {
+                result.put("action", action);
+                result.put("status", status);
+                result.put("body", "body");
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            if (Build.VERSION.SDK_INT < 15) {
+                String loadUrl = String.format("javascript:receive2(%s)", result.toString());
+                webView.loadUrl(loadUrl);
+            } else {
+                String loadUrl = String.format("javascript:bridgeReceive(%s)", result.toString());
+                webView.evaluateJavascript(loadUrl, new ValueCallback<String>() {
+                    @Override
+                    public void onReceiveValue(String value) {
+                        Log.e(NAME, String.format("onReceive value%s", value));
+                    }
+                });
             }
         }
     }
@@ -125,10 +205,10 @@ public class GouHuaH5 extends Fragment implements View.OnClickListener {
 
     public void jsBackCall(Object object) {
         if (Build.VERSION.SDK_INT < 15) {
-            String loadUrl = String.format("javascript:receive(%s)", object.toString());
+            String loadUrl = String.format("javascript:receive2(%s)", object.toString());
             mContent.loadUrl(loadUrl);
         } else {
-            String loadUrl = String.format("javascript:receive(\"%s\")", object.toString());
+            String loadUrl = String.format("javascript:receive2(\"%s\")", object.toString());
             mContent.evaluateJavascript(loadUrl, new ValueCallback<String>() {
                 @Override
                 public void onReceiveValue(String value) {
