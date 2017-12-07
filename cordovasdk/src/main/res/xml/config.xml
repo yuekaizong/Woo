@@ -42,4 +42,6 @@
     <allow-intent href="geo:*" />
     <allow-intent href="market:*" />
     <preference name="loglevel" value="DEBUG" />
+
+    <allow-navigation href="http://*/*" />
 </widget>

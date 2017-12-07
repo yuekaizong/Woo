@@ -1,13 +1,12 @@
 package kaizone.songmaya.woo.fragment.a;
 
 import android.Manifest;
-import android.content.Context;
-import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,13 +23,10 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
-
 import kaizone.songmaya.baidulbs.LbsManager;
 import kaizone.songmaya.baidulbs.entity.LocationInfo;
 import kaizone.songmaya.woo.R;
 import kaizone.songmaya.woo.util.SystemUtils;
-import kaizone.songmaya.woo.util.Tips;
 import kaizone.songmaya.woo.util.contact.ContactManager;
 
 /**
@@ -58,14 +54,24 @@ public class GouHuaH5 extends Fragment implements View.OnClickListener {
 
     JsBridge jsBridge;
 
+    SwipeRefreshLayout swipeRefreshLayout;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.a_goweb, null);
         mTitle = (TextView) view.findViewById(R.id.help_title);
+        mTitle.setVisibility(View.GONE);
         mContent = (WebView) view.findViewById(R.id.help_content);
         button1 = (Button) view.findViewById(R.id.button1);
         button2 = (Button) view.findViewById(R.id.button2);
+        swipeRefreshLayout = view.findViewById(R.id.swipeRefreshLayout);
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                swipeRefresh();
+            }
+        });
 
         button1.setOnClickListener(this);
         button2.setOnClickListener(this);
@@ -92,10 +98,15 @@ public class GouHuaH5 extends Fragment implements View.OnClickListener {
         settings.setDefaultTextEncodingName("utf-8");//设置编码格式
         jsBridge = new JsBridge(this, mContent);
         mContent.addJavascriptInterface(jsBridge, "bridge");
-        mContent.loadUrl("http://10.164.17.113:8080/index.html");
+        mContent.loadUrl("http://10.164.194.121/static/gouhua/#/");
         mContent.setWebChromeClient(new WebChromeClient());
 
         return view;
+    }
+
+    void swipeRefresh() {
+        mContent.reload();
+        swipeRefreshLayout.setRefreshing(false);
     }
 
     private static class JsBridge {
@@ -167,15 +178,27 @@ public class GouHuaH5 extends Fragment implements View.OnClickListener {
             jsBackCall("lbs", "success", body);
         }
 
-        public void jsBackCall(String action, String status, JSONArray body) {
+        public void jsBackCall(final String action, final String status, final JSONArray body) {
+            Log.e(NAME, "thread=" + Thread.currentThread().toString());
+            fragment.getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    jsBackCallNeedMainThread(action, status, body);
+                }
+            });
+        }
+
+        @JavascriptInterface
+        public void jsBackCallNeedMainThread(final String action, final String status, final JSONArray body) {
             JSONObject result = new JSONObject();
             try {
                 result.put("action", action);
                 result.put("status", status);
-                result.put("body", "body");
+                result.put("body", body);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
+            Log.e(NAME, result.toString());
             if (Build.VERSION.SDK_INT < 15) {
                 String loadUrl = String.format("javascript:receive2(%s)", result.toString());
                 webView.loadUrl(loadUrl);
@@ -195,7 +218,7 @@ public class GouHuaH5 extends Fragment implements View.OnClickListener {
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.button1:
-                jsBackCall("这是android数据");
+                androidCallJS();
                 break;
             case R.id.button2:
                 break;
@@ -203,12 +226,20 @@ public class GouHuaH5 extends Fragment implements View.OnClickListener {
     }
 
 
-    public void jsBackCall(Object object) {
+    public void androidCallJS() {
+        JSONObject result = new JSONObject();
+        try {
+            result.put("action", "button");
+            result.put("status", "fail");
+            result.put("body", "body");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
         if (Build.VERSION.SDK_INT < 15) {
-            String loadUrl = String.format("javascript:receive2(%s)", object.toString());
+            String loadUrl = String.format("javascript:bridgeReceive(%s)", result.toString());
             mContent.loadUrl(loadUrl);
         } else {
-            String loadUrl = String.format("javascript:receive2(\"%s\")", object.toString());
+            String loadUrl = String.format("javascript:bridgeReceive(%s)", result.toString());
             mContent.evaluateJavascript(loadUrl, new ValueCallback<String>() {
                 @Override
                 public void onReceiveValue(String value) {

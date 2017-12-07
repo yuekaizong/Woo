@@ -14,12 +14,12 @@ import kaizone.songmaya.woo.fragment.a.LocalDetail;
 public class AppConfig {
 
     public static final String[][] a ={
-            {GoFragment.NAME, ""+GoFragment.ID},
-            {DownloadFragment.NAME, ""+DownloadFragment.ID},
-            {GoFragment.NAME, ""+GoFragment.ID},
-            {LocalDetail.NAME, ""+LocalDetail.ID},
-            {GouHuaApiDetailTest.NAME, ""+GouHuaApiDetailTest.ID},
-            {GouHuaApiTest.NAME, ""+GouHuaApiTest.ID},
+//            {GoFragment.NAME, ""+GoFragment.ID},
+//            {DownloadFragment.NAME, ""+DownloadFragment.ID},
+//            {GoFragment.NAME, ""+GoFragment.ID},
+//            {LocalDetail.NAME, ""+LocalDetail.ID},
+//            {GouHuaApiDetailTest.NAME, ""+GouHuaApiDetailTest.ID},
+//            {GouHuaApiTest.NAME, ""+GouHuaApiTest.ID},
             {GouHuaH5.NAME, ""+GouHuaH5.ID}
     };
 }
