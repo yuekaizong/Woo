@@ -340,4 +340,11 @@ public class ApiBuilder implements ApiRepository {
         HttpUtil.toSubscribe(call, new ProgressSubscriber<Result>(nextListener, errorListener, context));
         return call;
     }
+
+    @Override
+    public Observable<Result> edApplInfoAndRiskInfo(Map map) {
+        Observable<Result> call = HttpUtil.getApiService(context).edApplInfoAndRiskInfo(map);
+        HttpUtil.toSubscribe(call, new ProgressSubscriber<Result>(nextListener, errorListener, context));
+        return call;
+    }
 }

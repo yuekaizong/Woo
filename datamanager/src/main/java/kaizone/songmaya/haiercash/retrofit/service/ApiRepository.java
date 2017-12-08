@@ -376,4 +376,7 @@ public interface ApiRepository {
     @PUT("app/appserver/uauth/payPasswd")
     Observable<Result> payPasswd(@Body Map map);
 
+    @POST("app/appserver/integration/fkb/edApplInfoAndRiskInfo")
+    Observable<Result> edApplInfoAndRiskInfo(@Body Map map);
+
 }

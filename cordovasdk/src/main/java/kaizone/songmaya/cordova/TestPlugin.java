@@ -43,6 +43,7 @@ public class TestPlugin extends CordovaPlugin {
     public static final int READ_CONTACTS_REQ_CODE = 1001;
     public static final int LIVEDETECT_REQ_CODE = 1003;
     public static final int LIVEDETECT_RESULT_CODE = 2003;
+    public static final int EDAPPLINFOANDRISK_REQ_CODE = 2004;
 
     @Override
     public boolean execute(String action, JSONArray args, CallbackContext callbackContext) throws JSONException {
@@ -72,6 +73,13 @@ public class TestPlugin extends CordovaPlugin {
             } else {
                 PermissionHelper.requestPermissions(this, LIVEDETECT_REQ_CODE,
                         new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA});
+            }
+        }//
+        else if ("edApplInfoAndRiskInfo".equals(action)) {
+            if (PermissionHelper.hasPermission(this, Manifest.permission.INTERNET)) {
+                edApplInfoAndRisk();
+            } else {
+                PermissionHelper.requestPermission(this, EDAPPLINFOANDRISK_REQ_CODE, Manifest.permission.INTERNET);
             }
         }
         return true;
@@ -106,6 +114,9 @@ public class TestPlugin extends CordovaPlugin {
                 break;
             case LIVEDETECT_REQ_CODE:
                 liveDetect(executeArgs);
+                break;
+            case EDAPPLINFOANDRISK_REQ_CODE:
+                edApplInfoAndRisk();
                 break;
         }
     }
@@ -180,5 +191,9 @@ public class TestPlugin extends CordovaPlugin {
         bundle.putBoolean("openSound", true);
         intent.putExtra("comprehensive_set", bundle);
         cordova.getActivity().startActivityForResult(intent, LIVEDETECT_RESULT_CODE);
+    }
+
+    private void edApplInfoAndRisk() {
+
     }
 }

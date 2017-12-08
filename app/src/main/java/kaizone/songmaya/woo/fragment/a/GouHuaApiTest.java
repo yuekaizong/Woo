@@ -15,19 +15,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.haiercash.gouhua.retrofit.annoation.NeedToken;
-import com.haiercash.gouhua.retrofit.beans.CustomerLogin;
-import com.haiercash.gouhua.retrofit.beans.Entity;
-import com.haiercash.gouhua.retrofit.beans.IsRegister;
-import com.haiercash.gouhua.retrofit.beans.Result;
-import com.haiercash.gouhua.retrofit.beans.VersionCheck;
-import com.haiercash.gouhua.retrofit.service.APIFactory;
-import com.haiercash.gouhua.retrofit.service.ApiBuilder;
-import com.haiercash.gouhua.retrofit.util.EncryptUtil;
-import com.haiercash.gouhua.retrofit.util.HttpUtil;
-import com.haiercash.gouhua.retrofit.util.Persistence;
-import com.haiercash.gouhua.retrofit.util.SubscriberOnNextListener;
-
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -35,6 +22,18 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import kaizone.songmaya.haiercash.retrofit.annoation.NeedToken;
+import kaizone.songmaya.haiercash.retrofit.beans.CustomerLogin;
+import kaizone.songmaya.haiercash.retrofit.beans.Entity;
+import kaizone.songmaya.haiercash.retrofit.beans.IsRegister;
+import kaizone.songmaya.haiercash.retrofit.beans.Result;
+import kaizone.songmaya.haiercash.retrofit.beans.VersionCheck;
+import kaizone.songmaya.haiercash.retrofit.service.APIFactory;
+import kaizone.songmaya.haiercash.retrofit.service.ApiBuilder;
+import kaizone.songmaya.haiercash.retrofit.util.EncryptUtil;
+import kaizone.songmaya.haiercash.retrofit.util.HttpUtil;
+import kaizone.songmaya.haiercash.retrofit.util.Persistence;
+import kaizone.songmaya.haiercash.retrofit.util.SubscriberOnNextListener;
 import kaizone.songmaya.woo.ContainerActivity;
 import kaizone.songmaya.woo.R;
 import kaizone.songmaya.woo.util.RecyclerViewAdapterTemplate;
@@ -242,7 +241,7 @@ public class GouHuaApiTest extends Fragment {
 
         new ApiBuilder()
                 .context(getContext())
-                .nextListenter(new SubscriberOnNextListener<Entity>() {
+                .nextListener(new SubscriberOnNextListener<Entity>() {
                     @Override
                     public void next(Entity result) {
                         Tips.toDialog(getActivity(), result.toString());
@@ -253,12 +252,12 @@ public class GouHuaApiTest extends Fragment {
 
     /*查询客户信息*/
     public void queryPerCustInfo() {
-        APIFactory.getInstance().queryPerCustInfo(new SubscriberOnNextListener<Result>() {
+        new ApiBuilder().nextListener(new SubscriberOnNextListener<Entity>() {
             @Override
-            public void next(Result result) {
-                Log.e(TAG, result.toString());
+            public void next(Entity entity) {
+
             }
-        }, getContext(), "13167066861");
+        }).queryPerCustInfo("13167066861");
     }
 
 
@@ -341,7 +340,7 @@ public class GouHuaApiTest extends Fragment {
                                                        Persistence.saveCustomerLogin(getContext(), result.body);
 
                                                        CustomerLogin customerLogin = Persistence.getCustomerLogin(getContext());
-                                                       HttpUtil.sToken = customerLogin.token.access_token;
+                                                       HttpUtil.sTokenStr = customerLogin.token.access_token;
                                                        HttpUtil.sClientSecret = customerLogin.clientSecret;
                                                        Log.e(TAG, customerLogin.toString());
                                                    }
@@ -352,7 +351,7 @@ public class GouHuaApiTest extends Fragment {
     private void getBankCard() {
         new ApiBuilder()
                 .context(getContext())
-                .nextListenter(new SubscriberOnNextListener<Entity>() {
+                .nextListener(new SubscriberOnNextListener<Entity>() {
                     @Override
                     public void next(Entity result) {
                         Tips.toDialog(getActivity(), result.toString());
@@ -363,7 +362,7 @@ public class GouHuaApiTest extends Fragment {
     private void getBankInfo() {
         new ApiBuilder()
                 .context(getContext())
-                .nextListenter(new SubscriberOnNextListener<Entity>() {
+                .nextListener(new SubscriberOnNextListener<Entity>() {
                     @Override
                     public void next(Entity result) {
                         Tips.toDialog(getActivity(), result.toString());
@@ -375,7 +374,7 @@ public class GouHuaApiTest extends Fragment {
     private void getBankList() {
         new ApiBuilder()
                 .context(getContext())
-                .nextListenter(new SubscriberOnNextListener<Entity>() {
+                .nextListener(new SubscriberOnNextListener<Entity>() {
                     @Override
                     public void next(Entity entity) {
                         Tips.toDialog(getActivity(), entity.toString());
@@ -391,7 +390,7 @@ public class GouHuaApiTest extends Fragment {
 
         new ApiBuilder()
                 .context(getContext())
-                .nextListenter(new SubscriberOnNextListener<Entity>() {
+                .nextListener(new SubscriberOnNextListener<Entity>() {
                     @Override
                     public void next(Entity result) {
                         Tips.toDialog(getActivity(), result.toString());
