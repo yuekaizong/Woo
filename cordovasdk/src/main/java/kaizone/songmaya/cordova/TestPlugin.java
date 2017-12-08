@@ -1,8 +1,12 @@
 package kaizone.songmaya.cordova;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.os.Bundle;
 import android.util.Log;
+
+import com.livedetect.LiveDetectActivity;
 
 import org.apache.cordova.CallbackContext;
 import org.apache.cordova.CordovaPlugin;
@@ -37,6 +41,8 @@ public class TestPlugin extends CordovaPlugin {
     public static final int PERMISSION_DENIED_ERROR = 20;
     public static final int ACCESS_FINE_LOCATION_REQ_CODE = 1000;
     public static final int READ_CONTACTS_REQ_CODE = 1001;
+    public static final int LIVEDETECT_REQ_CODE = 1003;
+    public static final int LIVEDETECT_RESULT_CODE = 2003;
 
     @Override
     public boolean execute(String action, JSONArray args, CallbackContext callbackContext) throws JSONException {
@@ -58,6 +64,15 @@ public class TestPlugin extends CordovaPlugin {
             } else {
                 PermissionHelper.requestPermission(this, READ_CONTACTS_REQ_CODE, Manifest.permission.READ_CONTACTS);
             }
+        }//
+        else if ("liveDetect".equals(action)) {
+            if (PermissionHelper.hasPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                    && PermissionHelper.hasPermission(this, Manifest.permission.CAMERA)) {
+                liveDetect(executeArgs);
+            } else {
+                PermissionHelper.requestPermissions(this, LIVEDETECT_REQ_CODE,
+                        new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA});
+            }
         }
         return true;
     }
@@ -65,6 +80,12 @@ public class TestPlugin extends CordovaPlugin {
     public void testPluginFunction(String action, JSONArray args, CallbackContext callbackContext) {
         Log.e(TAG, "这是一个Cordova测试");
         Log.e(TAG, String.format("%s, %s, %s", action, args.toString(), callbackContext.toString()));
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent intent) {
+        super.onActivityResult(requestCode, resultCode, intent);
+        String message = String.format("requestCode=%s, resultCoe=%s, intent=%s", requestCode, resultCode, intent);
     }
 
     @Override
@@ -83,6 +104,9 @@ public class TestPlugin extends CordovaPlugin {
             case READ_CONTACTS_REQ_CODE:
                 contacts(executeArgs);
                 break;
+            case LIVEDETECT_REQ_CODE:
+                liveDetect(executeArgs);
+                break;
         }
     }
 
@@ -97,21 +121,21 @@ public class TestPlugin extends CordovaPlugin {
             }
 
             @Override
-            public void onSuccess(Object response) {
-                LocationInfo info = (LocationInfo) response;
-                final JSONArray body = new JSONArray();
-                final JSONObject item = new JSONObject();
-                try {
-                    item.put("address", info.getAddressStr());
-                    item.put("latitude", info.getLatitude());
-                    item.put("longitude", info.getLongitude());
-                    body.put(item);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
+            public void onSuccess(final Object response) {
                 TestPlugin.this.cordova.getThreadPool().execute(new Runnable() {
                     @Override
                     public void run() {
+                        LocationInfo info = (LocationInfo) response;
+                        final JSONArray body = new JSONArray();
+                        final JSONObject item = new JSONObject();
+                        try {
+                            item.put("address", info.getAddressStr());
+                            item.put("latitude", info.getLatitude());
+                            item.put("longitude", info.getLongitude());
+                            body.put(item);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
                         TestPlugin.this.callbackContext.success(body);
                     }
                 });
@@ -120,26 +144,41 @@ public class TestPlugin extends CordovaPlugin {
     }
 
     private void contacts(JSONArray args) throws JSONException {
-
         if (contactAccessor == null) {
             contactAccessor = new ContactAccessorSdk5(this.cordova);
         }
-        JSONArray filter = new JSONArray();
-        filter.put("*");
-        JSONObject options = new JSONObject();
-        JSONArray desiredFields = new JSONArray();
-        desiredFields.put("displayName");
-        desiredFields.put("phoneNumbers");
-        options.put("desiredFields", desiredFields);
-        options.put("multiple", true);
 
-        final JSONArray data = contactAccessor.search(filter, options);
         this.cordova.getThreadPool().execute(new Runnable() {
             @Override
             public void run() {
+                JSONArray filter = new JSONArray();
+                filter.put("*");
+                JSONObject options = new JSONObject();
+                JSONArray desiredFields = new JSONArray();
+                desiredFields.put("displayName");
+                desiredFields.put("phoneNumbers");
+                try {
+                    options.put("desiredFields", desiredFields);
+                    options.put("multiple", true);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                final JSONArray data = contactAccessor.search(filter, options);
                 TestPlugin.this.callbackContext.success(data);
             }
         });
+    }
 
+    private void liveDetect(JSONArray args) throws JSONException {
+        Intent intent = new Intent(cordova.getActivity(), LiveDetectActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putBoolean("isRandomable", true);
+        bundle.putString("actions", "01279");
+        bundle.putString("selectActionsNum", "3");
+        bundle.putString("singleActionDectTime", "8");
+        bundle.putBoolean("isWaterable", false);
+        bundle.putBoolean("openSound", true);
+        intent.putExtra("comprehensive_set", bundle);
+        cordova.getActivity().startActivityForResult(intent, LIVEDETECT_RESULT_CODE);
     }
 }

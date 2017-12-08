@@ -94,6 +94,9 @@ public class FailActivity extends Activity {
         mReturnImg.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
+                Intent data = new Intent();
+                data.putExtra(LiveDetectConfig.FLAG_PIC_RESULT, mRezionTv.getText());
+                setResult(3, data);
                 finish();
             }
         });

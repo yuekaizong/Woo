@@ -47,9 +47,9 @@ public class SuccessActivity extends AppCompatActivity {
         Bundle result = mIntent.getBundleExtra("result");
 
         boolean check_pass = result.getBoolean("check_pass");
-        if(check_pass){
+        if (check_pass) {
             pic_result = result.getByteArray("pic_result");
-            if(pic_result != null){
+            if (pic_result != null) {
                 Bitmap bitmap = FileUtils.getBitmapByBytesAndScale(pic_result, 1);
                 success_img.setImageBitmap(bitmap);
             }
@@ -64,6 +64,9 @@ public class SuccessActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 //上传照片
+                Intent data = new Intent();
+                data.putExtra(LiveDetectConfig.FLAG_PIC_RESULT, pic_result);
+                setResult(3, data);
                 finish();
             }
         });
@@ -93,8 +96,6 @@ public class SuccessActivity extends AppCompatActivity {
         //FileUtils.setmContext(null);
         //android.os.Process.killProcess(android.os.Process.myPid());
     }
-
-
 
 
     private void save_image() {

@@ -1,2 +1,3 @@
 include ':app', ':gohuaretrofit', ':livedetect', ':cordovasdk', ':baidulbs'
 include ':retrofitutil'
+include ':datamanager'
