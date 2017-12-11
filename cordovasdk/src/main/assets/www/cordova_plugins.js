@@ -185,6 +185,7 @@ module.exports.metadata =
     "cordova-plugin-contacts": "2.3.1",
     "cordova-plugin-device-motion": "1.2.5",
     "cordova-plugin-device-orientation": "1.0.7"
+//    "cordova-plugin-Test": "0.0.1"
 };
 // BOTTOM OF METADATA
 });

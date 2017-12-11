@@ -42,6 +42,12 @@ var app = {
         document.getElementById("watchAcceleration").addEventListener("click", watchAcceleration);
         document.getElementById("getOrientation").addEventListener("click", getOrientation);
         document.getElementById("watchOrientation").addEventListener("click", watchOrientation);
+
+        document.getElementById('cordovaPluginLbs').addEventListener('click', cordovaPluginLbs);
+        document.getElementById('cordovaPluginContacts').addEventListener('click', cordovaPluginContacts);
+        document.getElementById('cordovaPluginLiveDetect').addEventListener('click', cordovaPluginLiveDetect);
+        document.getElementById('cordovaPluginLiveDetect').addEventListener('click', cordovaPluginLiveDetect);
+        document.getElementById('cordovaPluginEdApplInfoAndRiskInfo').addEventListener('click', cordovaPluginEdApplInfoAndRiskInfo);
     },
 
     // Update DOM on a Received Event
@@ -63,17 +69,102 @@ document.getElementById("setLocalStorage").addEventListener("click", setLocalSto
 document.getElementById("showLocalStorage").addEventListener("click", showLocalStorage);
 document.getElementById("removeProjectFromLocalStorage").addEventListener("click", removeProjectFromLocalStorage);
 document.getElementById("getLocalStorageByKey").addEventListener("click", getLocalStorageByKey);
-
 document.getElementById("getOrientation").addEventListener("click", getOrientation);
 document.getElementById("createContact").addEventListener("click", createContact);
 var localStorage = window.localStorage;
 var count = 0;
 
-document.getElementById('demo1').addEventListener('click', demo1);
+//----------------------------------
+document.getElementById('liveDetect').addEventListener('click', liveDetect);
+document.getElementById('contacts').addEventListener('click', contacts);
+document.getElementById('lbs').addEventListener('click', lbs);
 
-function demo1(){
-//  testPlugin.testPluginFunction("HelloWorld");
-         window.cordova.exec(null, null, 'TestPlugin', 'testPluginFunction', null);
+function cordovaPluginLbs(){
+     testPlugin.lbs(lbsSuccess, lbsFail, "这是lbs");
+     function lbsSuccess(data){
+          console.log("lbsSuccess 被执行.........................")
+          cordovaLog(data);
+     };
+     function lbsFail(data){
+
+     };
+}
+
+function cordovaPluginContacts(){
+         testPlugin.contacts(contactsSuccess, contactsFail, "这是contacts");
+         function contactsSuccess(data){
+              console.log("contactsSuccess 被执行///////////////////////")
+              cordovaLog(data);
+         };
+         function contactsFail(data){
+
+         };
+}
+
+function cordovaPluginLiveDetect(){
+         testPlugin.liveDetect(liveDetectSuccess, liveDetectFail, "这是liveDetect");
+         function liveDetectSuccess(data){
+              cordovaLog(data);
+         }
+         function liveDetectFail(data){
+
+         }
+}
+
+function cordovaPluginEdApplInfoAndRiskInfo(){
+          testPlugin.edApplInfoAndRiskInfo(edApplInfoAndRiskInfoSuccess, edApplInfoAndRiskInfoFail, "这是edApplInfoAndRisk");
+          function edApplInfoAndRiskInfoSuccess(data){
+               cordovaLog(data);
+          }
+          function edApplInfoAndRiskInfoFail(data){
+
+          }
+}
+
+function cordovaLog(data){
+        var str;
+        if (typeof data == "object"){
+            str = JSON.stringify(data);
+            alert("object "+str);
+        }else{
+            str = message;
+            alert("other "+str);
+        }
+        document.getElementById("message").innerHTML =str;
+}
+
+function liveDetect(){
+      window.bridge.liveDetect();
+}
+
+function bridgeReceive(message){
+    var str;
+    if (typeof message == "object"){
+        str = JSON.stringify(message);
+        alert("object "+str);
+    }else{
+        str = message;
+        alert("other "+str);
+    }
+    document.getElementById("message").innerHTML =str;
+    return "hello";
+}
+
+function contacts(){
+    bridge.contacts();
+}
+
+function lbs(){
+    window.bridge.lbs();
+}
+
+function receive(action, status, message){
+   var arr=new Array();
+   arr.push(action);
+   arr.push(status);
+   arr.push(message);
+   var str=arr.join("");
+   document.getElementById("message").innerHTML =str;
 }
 
 function setLocalStorage() {
@@ -88,14 +179,14 @@ function setLocalStorage() {
     }
     count++;
     localStorage.setItem("Count", count);
-    alert(document.getElementById("input1").value);
+//    alert(document.getElementById("input1").value);
 }
 
 function showLocalStorage() {
     console.log(localStorage.getItem("Name"));
     console.log(localStorage.getItem("Job"));
     console.log(localStorage.getItem("Project"));
-    alert(localStorage.getItem("Name") + "," + localStorage.getItem("Job") + "," + localStorage.getItem("Project") + "," + localStorage.getItem("Count"))
+//    alert(localStorage.getItem("Name") + "," + localStorage.getItem("Job") + "," + localStorage.getItem("Project") + "," + localStorage.getItem("Count"))
 
 }
 
@@ -106,7 +197,7 @@ function removeProjectFromLocalStorage() {
 
 function getLocalStorageByKey() {
     console.log(localStorage.key(0));
-    alert(localStorage.key(0) + "," + localStorage.getItem("Count"));
+//    alert(localStorage.key(0) + "," + localStorage.getItem("Count"));
 
 }
 

@@ -22,9 +22,10 @@ import java.lang.annotation.Target;
 
 import kaizone.songmaya.baidulbs.LbsManager;
 import kaizone.songmaya.baidulbs.entity.LocationInfo;
+import kaizone.songmaya.websdk.BuildConfig;
 
 /**
- * Created by Kaizo on 2017/12/5.
+ * Created by yuelibiao on 2017/12/5.
  */
 
 public class TestPlugin extends CordovaPlugin {
@@ -122,6 +123,7 @@ public class TestPlugin extends CordovaPlugin {
     }
 
     public void lbs(JSONArray args) throws JSONException {
+
         if (lbsManager == null) {
             lbsManager = new LbsManager(this.cordova.getActivity());
         }

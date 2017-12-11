@@ -28,6 +28,7 @@
         * Disables use of inline scripts in order to mitigate risk of XSS vulnerabilities. To change this:
             * Enable inline JS: add 'unsafe-inline' to default-src
     -->
+    <meta charset="UTF-8">
     <meta http-equiv="Content-Security-Policy"
           content="default-src 'self' data: gap: https://ssl.gstatic.com 'unsafe-eval'; style-src 'self' 'unsafe-inline'; media-src *; img-src 'self' data: content:;">
     <meta name="format-detection" content="telephone=no">
@@ -44,8 +45,16 @@
         <p class="event listening">Connecting to Device</p>
         <p class="event received">Device is Ready</p>
     </div>
-    <a href="http://10.164.17.113:8080/index.html">cordova</a>
-    <button id="demo1">demo1</button>
+    <a id="message"> Hello </a>
+    <button id="cordovaPluginLbs">cordovaPluginLbs</button>
+    <button id="cordovaPluginContacts">cordovaPluginContacts</button>
+    <button id="cordovaPluginLiveDetect">cordovaPluginLiveDetect</button>
+    <button id="cordovaPluginEdApplInfoAndRiskInfo">cordovaPluginEdApplInfoAndRiskInfo</button>
+    <br/>
+    <br/>
+    <button id="liveDetect">liveDetect</button>
+    <button id="contacts">contacts</button>
+    <button id="lbs">LBS</button>
     <button id="setLocalStorage">SET LOCAL STORAGE</button>
     <button id="showLocalStorage">SHOW LOCAL STORAGE</button>
     <button id="removeProjectFromLocalStorage">REMOVE PROJECT</button>

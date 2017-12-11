@@ -50,6 +50,7 @@ dependencies {
     compile project(':livedetect')
     compile project(':cordovasdk')
     compile project(':baidulbs')
+//    compile project(':datamanager')
 
     compile 'com.facebook.fresco:fresco:+'
     compile 'com.facebook.fresco:imagepipeline:+'

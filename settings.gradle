@@ -1,3 +1,4 @@
-include ':app', ':gohuaretrofit', ':livedetect', ':cordovasdk', ':baidulbs'
+include ':app',  ':livedetect', ':cordovasdk', ':baidulbs'
+//include ':gohuaretrofit'
 include ':retrofitutil'
 include ':datamanager'

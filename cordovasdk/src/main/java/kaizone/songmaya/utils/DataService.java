@@ -3,8 +3,6 @@ package kaizone.songmaya.utils;
 import android.app.Activity;
 import android.text.TextUtils;
 
-import org.w3c.dom.Text;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;

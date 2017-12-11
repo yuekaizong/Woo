@@ -37,7 +37,7 @@ public class MainActivity extends CordovaActivity
 
         // Set by <content src="index.html" /> in config.xml
 //        launchUrl = "http://10.164.194.121/static/gouhua/#/";
-        launchUrl = "http://10.164.17.113:8080/index.html";
+//        launchUrl = "http://10.164.17.113:8080/index.html";
         loadUrl(launchUrl);
     }
 }
