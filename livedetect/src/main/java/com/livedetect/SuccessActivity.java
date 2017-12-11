@@ -66,6 +66,7 @@ public class SuccessActivity extends AppCompatActivity {
                 //上传照片
                 Intent data = new Intent();
                 data.putExtra(LiveDetectConfig.FLAG_PIC_RESULT, pic_result);
+                LiveDetectConfig.sPicResult = pic_result;
                 setResult(3, data);
                 finish();
             }

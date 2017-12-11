@@ -4,9 +4,11 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.util.Base64;
 import android.util.Log;
 
 import com.livedetect.LiveDetectActivity;
+import com.livedetect.LiveDetectConfig;
 
 import org.apache.cordova.CallbackContext;
 import org.apache.cordova.CordovaPlugin;
@@ -95,6 +97,22 @@ public class TestPlugin extends CordovaPlugin {
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
         super.onActivityResult(requestCode, resultCode, intent);
         String message = String.format("requestCode=%s, resultCoe=%s, intent=%s", requestCode, resultCode, intent);
+        Log.e(TAG, "onActivityResult: " + message);
+        switch (requestCode) {
+            case LIVEDETECT_REQ_CODE:
+                onActivityResultForLiveDetect(intent);
+                break;
+        }
+    }
+
+    private void onActivityResultForLiveDetect(Intent intent) {
+        if (LiveDetectConfig.sPicResult != null && LiveDetectConfig.sPicResult.length > 0) {
+            byte[] output = Base64.encode(LiveDetectConfig.sPicResult, Base64.NO_WRAP);
+            String js_out = new String(output);
+            this.callbackContext.success(js_out);
+        }else{
+            this.callbackContext.sendPluginResult(new PluginResult(PluginResult.Status.ERROR, UNKNOWN_ERROR));
+        }
     }
 
     @Override
@@ -183,6 +201,7 @@ public class TestPlugin extends CordovaPlugin {
     }
 
     private void liveDetect(JSONArray args) throws JSONException {
+        cordova.setActivityResultCallback(this);
         Intent intent = new Intent(cordova.getActivity(), LiveDetectActivity.class);
         Bundle bundle = new Bundle();
         bundle.putBoolean("isRandomable", true);
@@ -192,7 +211,7 @@ public class TestPlugin extends CordovaPlugin {
         bundle.putBoolean("isWaterable", false);
         bundle.putBoolean("openSound", true);
         intent.putExtra("comprehensive_set", bundle);
-        cordova.getActivity().startActivityForResult(intent, LIVEDETECT_RESULT_CODE);
+        cordova.getActivity().startActivityForResult(intent, LIVEDETECT_REQ_CODE);
     }
 
     private void edApplInfoAndRisk() {

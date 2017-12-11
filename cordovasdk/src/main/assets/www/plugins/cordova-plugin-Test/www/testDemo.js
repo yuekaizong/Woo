@@ -19,15 +19,11 @@ cordova.define("cordova-plugin-Test.TestPlugin",
 //myFunc.prototype.lbs = function(successCallback, errorCallback, content){
 //        var win = function(data){
 //           testLog(data);
-//           data = "开始LBS 成功回调1";
-//           testLog(data);
 //           successCallback();
-//           data = "结束LBS 成功回调";
 //           testLog(data);
 //        };
 //        var fail = function(data){
 //           testLog(data);
-//           data = "失败";
 //           successCallback(data);
 //        };
 //        exec(win, fail,  "TestPlugin", "lbs", []);

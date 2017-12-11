@@ -105,6 +105,8 @@ function cordovaPluginLiveDetect(){
          testPlugin.liveDetect(liveDetectSuccess, liveDetectFail, "这是liveDetect");
          function liveDetectSuccess(data){
               cordovaLog(data);
+              var image = document.getElementById('myImage');
+              image.src = "data:image/jpeg;base64," + data
          }
          function liveDetectFail(data){
 

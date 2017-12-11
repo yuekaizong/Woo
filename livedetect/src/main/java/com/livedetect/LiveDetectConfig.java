@@ -11,4 +11,6 @@ public class LiveDetectConfig {
     public static final String FLAG_PIC_RESULT = "pic_result";
     public static final String FLAG_FAIL_MESSAGE = "fail_message";
 
+    public static byte[] sPicResult;
+
 }
