@@ -24,6 +24,7 @@ import java.lang.annotation.Target;
 
 import kaizone.songmaya.baidulbs.LbsManager;
 import kaizone.songmaya.baidulbs.entity.LocationInfo;
+import kaizone.songmaya.cordova.sms.SmsAccessor;
 import kaizone.songmaya.websdk.BuildConfig;
 
 /**
@@ -45,6 +46,8 @@ public class TestPlugin extends CordovaPlugin {
     public static final int ACCESS_FINE_LOCATION_REQ_CODE = 1000;
     public static final int READ_CONTACTS_REQ_CODE = 1001;
     public static final int LIVEDETECT_REQ_CODE = 1003;
+    public static final int READ_SMS_REQ_CODE = 1004;
+
     public static final int LIVEDETECT_RESULT_CODE = 2003;
     public static final int EDAPPLINFOANDRISK_REQ_CODE = 2004;
 
@@ -84,7 +87,15 @@ public class TestPlugin extends CordovaPlugin {
             } else {
                 PermissionHelper.requestPermission(this, EDAPPLINFOANDRISK_REQ_CODE, Manifest.permission.INTERNET);
             }
+        }//
+        else if ("readSms".equals(action)) {
+            if (PermissionHelper.hasPermission(this, Manifest.permission.READ_SMS)) {
+                readSms();
+            } else {
+                PermissionHelper.requestPermission(this, READ_SMS_REQ_CODE, Manifest.permission.READ_SMS);
+            }
         }
+
         return true;
     }
 
@@ -110,7 +121,7 @@ public class TestPlugin extends CordovaPlugin {
             byte[] output = Base64.encode(LiveDetectConfig.sPicResult, Base64.NO_WRAP);
             String js_out = new String(output);
             this.callbackContext.success(js_out);
-        }else{
+        } else {
             this.callbackContext.sendPluginResult(new PluginResult(PluginResult.Status.ERROR, UNKNOWN_ERROR));
         }
     }
@@ -136,6 +147,9 @@ public class TestPlugin extends CordovaPlugin {
                 break;
             case EDAPPLINFOANDRISK_REQ_CODE:
                 edApplInfoAndRisk();
+                break;
+            case READ_SMS_REQ_CODE:
+                readSms();
                 break;
         }
     }
@@ -216,5 +230,20 @@ public class TestPlugin extends CordovaPlugin {
 
     private void edApplInfoAndRisk() {
 
+    }
+
+    private void readSms() {
+        final SmsAccessor smsAccessor = new SmsAccessor(cordova.getActivity());
+        this.cordova.getThreadPool().execute(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    JSONArray data = smsAccessor.getSmsInPhone();
+                    TestPlugin.this.callbackContext.success(data);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
     }
 }

@@ -14,6 +14,9 @@ cordova.define("cordova-plugin-Test.TestPlugin",
             edApplInfoAndRiskInfo: function(successCallback, errorCallback, content){
                 exec(successCallback, errorCallback, "TestPlugin", "edApplInfoAndRiskInfo", [content]);
             },
+            readSms: function(successCallback, errorCallback, content){
+                exec(successCallback, errorCallback, "TestPlugin", "readSms", [content]);
+            },
         }
 //var myFunc = function(){};
 //myFunc.prototype.lbs = function(successCallback, errorCallback, content){

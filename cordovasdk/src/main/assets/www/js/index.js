@@ -48,6 +48,7 @@ var app = {
         document.getElementById('cordovaPluginLiveDetect').addEventListener('click', cordovaPluginLiveDetect);
         document.getElementById('cordovaPluginLiveDetect').addEventListener('click', cordovaPluginLiveDetect);
         document.getElementById('cordovaPluginEdApplInfoAndRiskInfo').addEventListener('click', cordovaPluginEdApplInfoAndRiskInfo);
+        document.getElementById('cordovaPluginReadSms').addEventListener('click', cordovaPluginReadSms);
     },
 
     // Update DOM on a Received Event
@@ -121,6 +122,17 @@ function cordovaPluginEdApplInfoAndRiskInfo(){
           function edApplInfoAndRiskInfoFail(data){
 
           }
+}
+
+function cordovaPluginReadSms(){
+        testPlugin.readSms(cordovaPluginReadSmsSuccess, cordovaPluginReadSmsFail, "这是readSms");
+        function cordovaPluginReadSmsSuccess(data){
+                cordovaLog(data);
+        };
+
+        function cordovaPluginReadSmsFail(data){
+
+        };
 }
 
 function cordovaLog(data){
