@@ -22,10 +22,10 @@ android {
         }
     }
    productFlavors {
-        yingyongbao {}
-        xiaomi {}
-        qh360 {}
-        baidu {}
+//        yingyongbao {}
+//        xiaomi {}
+//        qh360 {}
+//        baidu {}
         wandoujia {}
     }
 
@@ -47,9 +47,9 @@ dependencies {
 
     compile project(':retrofitutil')
 //    compile project(':gohuaretrofit')
-    compile project(':livedetect')
-    compile project(':cordovasdk')
-    compile project(':baidulbs')
+//    compile project(':livedetect')
+    compile project(':haierloan-sdk')
+//    compile project(':baidulbs')
 //    compile project(':datamanager')
 
     compile 'com.facebook.fresco:fresco:+'

@@ -22,6 +22,7 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+
 }
 
 dependencies {
@@ -31,6 +32,13 @@ dependencies {
     api project(':baidulbs')
     api project(':livedetect')
     api project(':datamanager')
+
+    compile 'io.reactivex:rxjava:+'
+    compile 'io.reactivex:rxandroid:+'
+    compile 'com.squareup.retrofit2:retrofit:+'
+    compile 'com.squareup.retrofit2:converter-gson:+'
+    compile 'com.squareup.retrofit2:adapter-rxjava:+'
+    compile 'com.google.code.gson:gson:+'
 
     implementation 'com.android.support:appcompat-v7:27.0.1'
     testImplementation 'junit:junit:4.12'

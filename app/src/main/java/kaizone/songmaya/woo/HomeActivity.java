@@ -28,12 +28,9 @@ import kaizone.songmaya.jsyl.retrofitutil.bean.Viewpoint;
 import kaizone.songmaya.jsyl.retrofitutil.user.APIFactory;
 import kaizone.songmaya.jsyl.retrofitutil.util.SubscriberOnErrorListener;
 import kaizone.songmaya.jsyl.retrofitutil.util.SubscriberOnNextListenter;
-import kaizone.songmaya.websdk.MainActivity;
+import kaizone.songmaya.websdk.HaierLoanMainActivity;
 import kaizone.songmaya.woo.fragment.FragmentController;
 import kaizone.songmaya.woo.fragment.a.GoFragment;
-import kaizone.songmaya.woo.fragment.a.GoFragment2;
-import kaizone.songmaya.woo.fragment.a.GoFragment3;
-import kaizone.songmaya.woo.fragment.a.GoMyPublishFragment;
 import kaizone.songmaya.woo.fragment.a.GoWebFragment;
 import kaizone.songmaya.woo.fragment.a.GouHuaApiTest;
 import kaizone.songmaya.woo.fragment.a.LocalFunc;
@@ -160,7 +157,7 @@ public class HomeActivity extends BaseActivity {
                                 ItemDetailActivity.to(HomeActivity.this, GoFragment.ID);
                                 break;
                             case R.id.navigation_item_message:
-                                Intent intent = new Intent(HomeActivity.this, MainActivity.class);
+                                Intent intent = new Intent(HomeActivity.this, HaierLoanMainActivity.class);
                                 HomeActivity.this.startActivity(intent);
                                 break;
                             case R.id.navigation_item_setting:

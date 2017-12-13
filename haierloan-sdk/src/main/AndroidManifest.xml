@@ -7,7 +7,7 @@
         android:label="@string/app_name"
         android:supportsRtl="true">
         <activity
-            android:name="MainActivity"
+            android:name=".HaierLoanMainActivity"
             android:configChanges="orientation|keyboardHidden|keyboard|screenSize|locale"
             android:launchMode="singleTop"
             android:theme="@android:style/Theme.DeviceDefault.NoActionBar"
