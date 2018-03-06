@@ -20,12 +20,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.lang.annotation.Target;
-
 import kaizone.songmaya.baidulbs.LbsManager;
 import kaizone.songmaya.baidulbs.entity.LocationInfo;
 import kaizone.songmaya.cordova.sms.SmsAccessor;
-import kaizone.songmaya.websdk.BuildConfig;
 
 /**
  * Created by yuelibiao on 2017/12/5.
@@ -47,6 +44,7 @@ public class TestPlugin extends CordovaPlugin {
     public static final int READ_CONTACTS_REQ_CODE = 1001;
     public static final int LIVEDETECT_REQ_CODE = 1003;
     public static final int READ_SMS_REQ_CODE = 1004;
+    public static final int IDBANK_REQ_CODE = 1005;
 
     public static final int LIVEDETECT_RESULT_CODE = 2003;
     public static final int EDAPPLINFOANDRISK_REQ_CODE = 2004;
@@ -94,6 +92,9 @@ public class TestPlugin extends CordovaPlugin {
             } else {
                 PermissionHelper.requestPermission(this, READ_SMS_REQ_CODE, Manifest.permission.READ_SMS);
             }
+        }//
+        else if ("ocrIdBank".equals(action)) {
+
         }
 
         return true;
@@ -245,5 +246,9 @@ public class TestPlugin extends CordovaPlugin {
                 }
             }
         });
+    }
+
+    private void ocrIdBank(){
+
     }
 }

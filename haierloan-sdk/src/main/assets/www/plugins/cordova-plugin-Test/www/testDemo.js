@@ -17,6 +17,9 @@ cordova.define("cordova-plugin-Test.TestPlugin",
             readSms: function(successCallback, errorCallback, content){
                 exec(successCallback, errorCallback, "TestPlugin", "readSms", [content]);
             },
+            ocrIdBank: function(successCallback, errorCallback, content){
+                exec(successCallback, errorCallback, "TestPlugin", "ocrIdBank", [content]);
+            },
         }
 //var myFunc = function(){};
 //myFunc.prototype.lbs = function(successCallback, errorCallback, content){

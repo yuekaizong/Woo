@@ -1,4 +1,4 @@
-include ':app',  ':livedetect', ':baidulbs'
+include ':app',  ':livedetect', ':baidulbs', ':ocr'
 //include ':gohuaretrofit'
 include ':retrofitutil'
 include ':datamanager'
