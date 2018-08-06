@@ -22,22 +22,22 @@ android {
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
-    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    androidTestImplementation('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-    compile 'com.android.support:appcompat-v7:27.0.1'
-    testCompile 'junit:junit:4.12'
+    implementation 'com.android.support:appcompat-v7:27.0.1'
+    testImplementation 'junit:junit:4.12'
 
     /*rx-android-java*/
-    compile 'io.reactivex:rxjava:+'
-    compile 'io.reactivex:rxandroid:+'
+    implementation 'io.reactivex:rxjava:+'
+    implementation 'io.reactivex:rxandroid:+'
 //    compile 'com.squareup.retrofit:adapter-rxjava:+'
 //    compile 'com.trello:rxlifecycle:+'
 //    compile 'com.trello:rxlifecycle-components:+'
     /*rotrofit*/
-    compile 'com.squareup.retrofit2:retrofit:+'
-    compile 'com.squareup.retrofit2:converter-gson:+'
-    compile 'com.squareup.retrofit2:adapter-rxjava:+'
-    compile 'com.google.code.gson:gson:+'
+    implementation 'com.squareup.retrofit2:retrofit:+'
+    implementation 'com.squareup.retrofit2:converter-gson:+'
+    implementation 'com.squareup.retrofit2:adapter-rxjava:+'
+    implementation 'com.google.code.gson:gson:+'
 }

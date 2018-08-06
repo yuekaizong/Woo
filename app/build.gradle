@@ -35,30 +35,30 @@ android {
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
-    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    androidTestImplementation('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-    compile 'com.android.support:appcompat-v7:27.0.1'
-    compile 'com.android.support:support-v4:27.0.1'
-    compile 'com.android.support:recyclerview-v7:27.0.1'
-    compile 'com.android.support:design:27.0.1'
-    testCompile 'junit:junit:4.12'
+    implementation 'com.android.support:appcompat-v7:27.0.1'
+    implementation 'com.android.support:support-v4:27.0.1'
+    implementation 'com.android.support:recyclerview-v7:27.0.1'
+    implementation 'com.android.support:design:27.0.1'
+    testImplementation 'junit:junit:4.12'
 
-    compile project(':retrofitutil')
+    implementation project(':retrofitutil')
 //    compile project(':ocr')
 //    compile project(':gohuaretrofit')
 //    compile project(':livedetect')
-    compile project(':haierloan-sdk')
+    implementation project(':haierloan-sdk')
 //    compile project(':baidulbs')
-//    compile project(':datamanager')
+    compile project(':datamanager')
 
-    compile 'com.facebook.fresco:fresco:+'
-    compile 'com.facebook.fresco:imagepipeline:+'
+    implementation 'com.facebook.fresco:fresco:+'
+    implementation 'com.facebook.fresco:imagepipeline:+'
 
     /*图片轮播*/
-    compile 'com.youth.banner:banner:1.4.5'
+    implementation 'com.youth.banner:banner:1.4.5'
 
-    compile 'com.github.barteksc:android-pdf-viewer:2.5.1'
-    compile 'com.yuyh.bankcardformat:library:1.0.2'
+    implementation 'com.github.barteksc:android-pdf-viewer:2.5.1'
+    implementation 'com.yuyh.bankcardformat:library:1.0.2'
 }
