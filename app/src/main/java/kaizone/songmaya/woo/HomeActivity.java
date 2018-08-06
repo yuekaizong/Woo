@@ -28,7 +28,6 @@ import kaizone.songmaya.jsyl.retrofitutil.bean.Viewpoint;
 import kaizone.songmaya.jsyl.retrofitutil.user.APIFactory;
 import kaizone.songmaya.jsyl.retrofitutil.util.SubscriberOnErrorListener;
 import kaizone.songmaya.jsyl.retrofitutil.util.SubscriberOnNextListenter;
-import kaizone.songmaya.websdk.HaierLoanMainActivity;
 import kaizone.songmaya.woo.fragment.FragmentController;
 import kaizone.songmaya.woo.fragment.a.GoFragment;
 import kaizone.songmaya.woo.fragment.a.GoWebFragment;
@@ -117,7 +116,7 @@ public class HomeActivity extends BaseActivity {
         setUpPanel();
     }
 
-    public void setUpPanel(){
+    public void setUpPanel() {
         findViewById(R.id.panel1).setVisibility(View.GONE);
         findViewById(R.id.panel2).setVisibility(View.VISIBLE);
         replaceFragment(LocalFunc.ID);
@@ -126,7 +125,7 @@ public class HomeActivity extends BaseActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        Log.e(TAG, "onActivityResult: "+String.format("requestCode=%s,resultCode=%s", requestCode, resultCode));
+        Log.e(TAG, "onActivityResult: " + String.format("requestCode=%s,resultCode=%s", requestCode, resultCode));
     }
 
     private void setUpProfileImage() {
@@ -157,8 +156,8 @@ public class HomeActivity extends BaseActivity {
                                 ItemDetailActivity.to(HomeActivity.this, GoFragment.ID);
                                 break;
                             case R.id.navigation_item_message:
-                                Intent intent = new Intent(HomeActivity.this, HaierLoanMainActivity.class);
-                                HomeActivity.this.startActivity(intent);
+//                                Intent intent = new Intent(HomeActivity.this, HaierLoanMainActivity.class);
+//                                HomeActivity.this.startActivity(intent);
                                 break;
                             case R.id.navigation_item_setting:
                                 ContainerActivity.toForResult(HomeActivity.this, GoWebFragment.ID, REQUEST_CODE_1);
@@ -203,9 +202,9 @@ public class HomeActivity extends BaseActivity {
         }
     };
 
-    private void replaceFragment(int fragmentId){
+    private void replaceFragment(int fragmentId) {
         Fragment f = FragmentController.obtain(fragmentId, null);
-        replaceContent(R.id.panel2,  f);
+        replaceContent(R.id.panel2, f);
     }
 
     private void replaceContent(int layoutId, Fragment bf) {

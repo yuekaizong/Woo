@@ -23,8 +23,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import kaizone.songmaya.baidulbs.LbsManager;
-import kaizone.songmaya.baidulbs.entity.LocationInfo;
 import kaizone.songmaya.woo.R;
 import kaizone.songmaya.woo.util.SystemUtils;
 import kaizone.songmaya.woo.util.contact.ContactManager;
@@ -145,33 +143,6 @@ public class GouHuaH5 extends Fragment implements View.OnClickListener {
 
         @JavascriptInterface
         public void lbs() {
-            if (SystemUtils.checkHasPermission(fragment.getActivity(), Manifest.permission.ACCESS_FINE_LOCATION)) {
-                LbsManager lbsManager = new LbsManager(fragment.getActivity());
-                lbsManager.startLocation(new LbsManager.OnLocationListener() {
-                    @Override
-                    public void onErr(String retFlag, String reason) {
-                        Log.e(NAME, retFlag + reason);
-                    }
-
-                    @Override
-                    public void onSuccess(Object response) {
-                        if (response instanceof LocationInfo) {
-                            LocationInfo info = (LocationInfo) response;
-                            JSONArray body = new JSONArray();
-                            JSONObject item = new JSONObject();
-                            try {
-                                item.put("address", info.getAddressStr());
-                                item.put("latitude", info.getLatitude());
-                                item.put("longitude", info.getLongitude());
-                                body.put(item);
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
-                            lbsSuccess(body);
-                        }
-                    }
-                });
-            }
         }
 
         public void lbsSuccess(JSONArray body) {

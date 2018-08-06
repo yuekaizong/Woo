@@ -25,12 +25,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 
-import com.facebook.drawee.view.SimpleDraweeView;
-import com.idcard.CardInfo;
-import com.idcard.TengineID;
-import com.livedetect.LiveDetectActivity;
-import com.ui.card.TRCardScan;
-
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
@@ -194,16 +188,16 @@ public class GouHuaApiDetailTest extends Fragment {
     void doLiveDetect() {
         if (SystemUtils.checkHasPermission(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE)
                 && SystemUtils.checkHasPermission(getActivity(), Manifest.permission.CAMERA)) {
-            Intent intent = new Intent(getActivity(), LiveDetectActivity.class);
-            Bundle bundle = new Bundle();
-            bundle.putBoolean("isRandomable", true);
-            bundle.putString("actions", "01279");
-            bundle.putString("selectActionsNum", "3");
-            bundle.putString("singleActionDectTime", "8");
-            bundle.putBoolean("isWaterable", false);
-            bundle.putBoolean("openSound", true);
-            intent.putExtra("comprehensive_set", bundle);
-            startActivityForResult(intent, 3);
+//            Intent intent = new Intent(getActivity(), LiveDetectActivity.class);
+//            Bundle bundle = new Bundle();
+//            bundle.putBoolean("isRandomable", true);
+//            bundle.putString("actions", "01279");
+//            bundle.putString("selectActionsNum", "3");
+//            bundle.putString("singleActionDectTime", "8");
+//            bundle.putBoolean("isWaterable", false);
+//            bundle.putBoolean("openSound", true);
+//            intent.putExtra("comprehensive_set", bundle);
+//            startActivityForResult(intent, 3);
         } else {
             Tips.toDialog(getActivity(), "开启存储和摄像头权限", "确定", new Runnable() {
                 @Override
@@ -219,18 +213,6 @@ public class GouHuaApiDetailTest extends Fragment {
         super.onActivityResult(requestCode, resultCode, data);
         Log.e("返回", String.format("requestCode=%s,resultCode=%s,data=%s", requestCode, resultCode,
                 data != null ? data.toString() : "null"));
-        if (resultCode == TRCardScan.RESULT_GET_CARD_OK) {
-            //身份证扫描返回
-            if (requestCode == 1 || requestCode == 2) {
-                final CardInfo cardInfo = (CardInfo) data.getSerializableExtra("cardinfo");
-                if (cardInfo != null) {
-                    Log.e(TAG, "onActivityResult: " + cardInfo.getAllinfo());
-                    Tips.toDialog(getActivity(), cardInfo.getAllinfo());
-                } else {
-                    Log.e(TAG, "onActivityResult: cardInfo == null");
-                }
-            }
-        }//
         if (requestCode == REQUEST_CODE_TAKEPHOTO) {
             File photoFile = new File(getActivity().getExternalCacheDir() + "/www", "photo.jpg");
             ImageView draweeView = new ImageView(getActivity());
@@ -241,18 +223,6 @@ public class GouHuaApiDetailTest extends Fragment {
     }
 
     private void startScan(int requestCode) {
-//        CaptureActivity.tengineID = TengineID.TIDCARD2;
-//        CaptureActivity.isPortrait = true;
-//        CaptureActivity.ShowCopyRightTxt = "";
-//        Intent intent = new Intent(this, CaptureActivity.class);
-//        intent.putExtra("engine", engin);
-//        startActivityForResult(intent, requestCode);
-
-        TRCardScan.SetEngineType(TengineID.TIDCARD2);
-        TRCardScan.isPortrait = true;
-        Intent intent = new Intent(getActivity(), TRCardScan.class);
-        intent.putExtra("engine", MyApplication.engin);
-        startActivityForResult(intent, requestCode);
     }
 
 
@@ -330,7 +300,7 @@ public class GouHuaApiDetailTest extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        if (getView() == null)return;
+        if (getView() == null) return;
         getView().getViewTreeObserver().addOnGlobalFocusChangeListener(new ViewTreeObserver.OnGlobalFocusChangeListener() {
             @Override
             public void onGlobalFocusChanged(View oldFocus, View newFocus) {

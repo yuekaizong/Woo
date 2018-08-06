@@ -17,8 +17,8 @@
 package kaizone.songmaya.woo.util.contact;
 
 import android.support.v4.app.Fragment;
+import android.util.Log;
 
-import org.apache.cordova.LOG;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -111,7 +111,7 @@ public abstract class ContactAccessor {
                 }
             }
         } catch (JSONException e) {
-            LOG.e(LOG_TAG, e.getMessage(), e);
+            Log.e(LOG_TAG, e.getMessage(), e);
         }
         return map;
     }
@@ -131,13 +131,13 @@ public abstract class ContactAccessor {
             if (obj != null) {
                 value = obj.getString(property);
                 if (value.equals("null")) {
-                    LOG.d(LOG_TAG, property + " is string called 'null'");
+                    Log.d(LOG_TAG, property + " is string called 'null'");
                     value = null;
                 }
             }
        }
         catch (JSONException e) {
-            LOG.d(LOG_TAG, "Could not get = " + e.getMessage());
+            Log.d(LOG_TAG, "Could not get = " + e.getMessage());
         }
         return value;
     }

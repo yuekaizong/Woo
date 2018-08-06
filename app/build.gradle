@@ -49,9 +49,9 @@ dependencies {
 //    compile project(':ocr')
 //    compile project(':gohuaretrofit')
 //    compile project(':livedetect')
-    implementation project(':haierloan-sdk')
+//    api project(':haierloan-sdk')
 //    compile project(':baidulbs')
-    compile project(':datamanager')
+    api project(':datamanager')
 
     implementation 'com.facebook.fresco:fresco:+'
     implementation 'com.facebook.fresco:imagepipeline:+'

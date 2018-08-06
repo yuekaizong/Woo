@@ -1,5 +1,5 @@
-include ':app',  ':livedetect', ':baidulbs', ':ocr'
+include ':app',  ':livedetect', ':baidulbs'
 //include ':gohuaretrofit'
 include ':retrofitutil'
 include ':datamanager'
-include ':haierloan-sdk'
+//include ':haierloan-sdk'

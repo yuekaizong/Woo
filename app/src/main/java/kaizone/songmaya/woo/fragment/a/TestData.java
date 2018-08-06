@@ -1,14 +1,6 @@
 package kaizone.songmaya.woo.fragment.a;
 
 import android.os.AsyncTask;
-import android.util.Log;
-import android.view.View;
-
-import com.idcard.CardInfo;
-import com.idcard.TFieldID;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -17,19 +9,15 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
 import kaizone.songmaya.jsyl.retrofitutil.bean.Viewpoint;
-import kaizone.songmaya.woo.util.DES;
 import okhttp3.FormBody;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
-import okhttp3.RequestBody;
 import okhttp3.Response;
-import retrofit2.http.FormUrlEncoded;
 
 /**
  * Created by yuekaizone on 2017/6/15.
@@ -104,65 +92,65 @@ public class TestData {
         return getViewpoints().get(0);
     }
 
-    public static class Info {
-        public String name;
-        public String sex;
-        public String folk;
-        public String birthday;
-        public String address;
-        public String num;
-        public String issue;
-        public String period;
-        public String phoneNum;
+//    public static class Info {
+//        public String name;
+//        public String sex;
+//        public String folk;
+//        public String birthday;
+//        public String address;
+//        public String num;
+//        public String issue;
+//        public String period;
+//        public String phoneNum;
+//
+//        public static Info parse(CardInfo cardInfo) {
+//            Info obj = new Info();
+//            obj.name = cardInfo.getFieldString(TFieldID.NAME);
+//            obj.sex = cardInfo.getFieldString(TFieldID.SEX);
+//            obj.folk = cardInfo.getFieldString(TFieldID.FOLK);
+//            obj.birthday = cardInfo.getFieldString(TFieldID.BIRTHDAY);
+//            obj.address = cardInfo.getFieldString(TFieldID.ADDRESS);
+//            obj.num = cardInfo.getFieldString(TFieldID.NUM);
+//            obj.issue = cardInfo.getFieldString(TFieldID.ISSUE);
+//            obj.period = cardInfo.getFieldString(TFieldID.PERIOD);
+//            obj.phoneNum = "13109097878";
+//            return obj;
+//        }
+//
+//        public static JSONObject parse(Info obj) {
+//            JSONObject json = new JSONObject();
+//            try {
+//                json.putOpt("name", obj.name);
+//                json.putOpt("sex", obj.sex);
+//                json.putOpt("folk", obj.folk);
+//                json.putOpt("birthday", obj.birthday);
+//                json.putOpt("address", obj.address);
+//                json.putOpt("num", obj.num);
+//                json.putOpt("issue", obj.issue);
+//                json.putOpt("period", obj.period);
+//                json.putOpt("phoneNum", obj.phoneNum);
+//            } catch (JSONException e) {
+//                e.printStackTrace();
+//            }
+//            return json;
+//        }
+//    }
 
-        public static Info parse(CardInfo cardInfo) {
-            Info obj = new Info();
-            obj.name = cardInfo.getFieldString(TFieldID.NAME);
-            obj.sex = cardInfo.getFieldString(TFieldID.SEX);
-            obj.folk = cardInfo.getFieldString(TFieldID.FOLK);
-            obj.birthday = cardInfo.getFieldString(TFieldID.BIRTHDAY);
-            obj.address = cardInfo.getFieldString(TFieldID.ADDRESS);
-            obj.num = cardInfo.getFieldString(TFieldID.NUM);
-            obj.issue = cardInfo.getFieldString(TFieldID.ISSUE);
-            obj.period = cardInfo.getFieldString(TFieldID.PERIOD);
-            obj.phoneNum = "13109097878";
-            return obj;
-        }
-
-        public static JSONObject parse(Info obj) {
-            JSONObject json = new JSONObject();
-            try {
-                json.putOpt("name", obj.name);
-                json.putOpt("sex", obj.sex);
-                json.putOpt("folk", obj.folk);
-                json.putOpt("birthday", obj.birthday);
-                json.putOpt("address", obj.address);
-                json.putOpt("num", obj.num);
-                json.putOpt("issue", obj.issue);
-                json.putOpt("period", obj.period);
-                json.putOpt("phoneNum", obj.phoneNum);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-            return json;
-        }
-    }
-
-    public static void check(CardInfo cardInfo) {
-        try {
-            JSONObject jsonObject = Info.parse(Info.parse(cardInfo));
-            Log.e(TAG, String.format("%s", jsonObject.toString()));
-            String encrypt = DES.encryptDES(jsonObject.toString(), "*()&^%$#");
-            Log.e(TAG, String.format("encrypt %s", encrypt));
-            String source = DES.decryptDES(encrypt, "*()&^%$#");
-            Log.e(TAG, String.format("source %s", source));
-            HashMap map = new HashMap();
-            map.put("ciphertext", encrypt);
-            http("POST", map);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
+//    public static void check(CardInfo cardInfo) {
+//        try {
+//            JSONObject jsonObject = Info.parse(Info.parse(cardInfo));
+//            Log.e(TAG, String.format("%s", jsonObject.toString()));
+//            String encrypt = DES.encryptDES(jsonObject.toString(), "*()&^%$#");
+//            Log.e(TAG, String.format("encrypt %s", encrypt));
+//            String source = DES.decryptDES(encrypt, "*()&^%$#");
+//            Log.e(TAG, String.format("source %s", source));
+//            HashMap map = new HashMap();
+//            map.put("ciphertext", encrypt);
+//            http("POST", map);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//    }
 
     public static void http(String method, Map<String, String> map) {
 
