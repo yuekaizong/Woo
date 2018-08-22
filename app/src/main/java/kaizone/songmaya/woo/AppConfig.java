@@ -19,7 +19,7 @@ public class AppConfig {
 //            {GoFragment.NAME, ""+GoFragment.ID},
 //            {LocalDetail.NAME, ""+LocalDetail.ID},
 //            {GouHuaApiDetailTest.NAME, ""+GouHuaApiDetailTest.ID},
-//            {GouHuaApiTest.NAME, ""+GouHuaApiTest.ID},
+            {GouHuaApiTest.NAME, ""+GouHuaApiTest.ID},
             {GouHuaH5.NAME, ""+GouHuaH5.ID}
     };
 }

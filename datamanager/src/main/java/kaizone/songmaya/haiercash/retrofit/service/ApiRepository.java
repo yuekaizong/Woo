@@ -29,6 +29,15 @@ import rx.Observable;
 public interface ApiRepository {
 
 
+    @PUT("/customer/login")
+    Observable<Result>  smartNsLogin(@Body Map map);
+
+    @POST("/setup1")
+    Observable<Result>  smartNsSetup1(@Body Map map);
+
+    @POST("/setup2")
+    Observable<Result>  smartNsSetup2(@Body Map map);
+
     /**
      * 系统参数列表查询
      *

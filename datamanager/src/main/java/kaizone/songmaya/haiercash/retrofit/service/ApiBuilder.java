@@ -48,6 +48,26 @@ public class ApiBuilder implements ApiRepository {
         return this;
     }
 
+    @Override
+    public Observable<Result> smartNsLogin(Map map) {
+        Observable<Result> call = HttpUtil.getApiService(context).smartNsLogin(map);
+        HttpUtil.toSubscribe(call, new ProgressSubscriber<Result>(nextListener, errorListener, context));
+        return call;
+    }
+
+    @Override
+    public Observable<Result> smartNsSetup1(Map map) {
+        Observable<Result> call = HttpUtil.getApiService(context).smartNsSetup1(map);
+        HttpUtil.toSubscribe(call, new ProgressSubscriber<Result>(nextListener, errorListener, context));
+        return call;
+    }
+
+    @Override
+    public Observable<Result> smartNsSetup2(Map map) {
+        Observable<Result> call = HttpUtil.getApiService(context).smartNsSetup2(map);
+        HttpUtil.toSubscribe(call, new ProgressSubscriber<Result>(nextListener, errorListener, context));
+        return call;
+    }
 
     @Override
     public Observable<Result> selectByParams(String sysTyp) {

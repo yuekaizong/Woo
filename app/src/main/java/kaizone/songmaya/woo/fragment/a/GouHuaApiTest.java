@@ -1,10 +1,15 @@
 package kaizone.songmaya.woo.fragment.a;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.content.pm.PackageInfo;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.FileProvider;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -15,6 +20,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.facebook.drawee.view.SimpleDraweeView;
+
+import java.io.File;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -33,6 +41,7 @@ import kaizone.songmaya.haiercash.retrofit.service.ApiBuilder;
 import kaizone.songmaya.haiercash.retrofit.util.EncryptUtil;
 import kaizone.songmaya.haiercash.retrofit.util.HttpUtil;
 import kaizone.songmaya.haiercash.retrofit.util.Persistence;
+import kaizone.songmaya.haiercash.retrofit.util.SubscriberOnErrorListener;
 import kaizone.songmaya.haiercash.retrofit.util.SubscriberOnNextListener;
 import kaizone.songmaya.woo.ContainerActivity;
 import kaizone.songmaya.woo.R;
@@ -58,7 +67,15 @@ public class GouHuaApiTest extends Fragment {
     RecyclerView mRecyclerView;
     RecyclerViewAdapterTemplate mAdapter;
 
+    RecyclerView mTopView;
+    RecyclerViewAdapterTemplate mTopAdapter;
+
     List<String> mData = new ArrayList<>();
+    List<String> mTopDate = new ArrayList<>();
+
+    private int REQUEST_CODE = 110;
+
+    private Uri mImageUri;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -66,6 +83,8 @@ public class GouHuaApiTest extends Fragment {
         mData.add("Annotation");
         mData.add("GouHuaApiDetail");
         mData.addAll(getAnnactionApiServices());
+
+        mTopDate.add("添加文件");
     }
 
     @Nullable
@@ -106,7 +125,61 @@ public class GouHuaApiTest extends Fragment {
             }
         });
 
+        mTopView = (RecyclerView) view.findViewById(R.id.top);
+        LinearLayoutManager topLayoutManager = new LinearLayoutManager(getContext());
+        topLayoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
+        mTopView.setLayoutManager(topLayoutManager);
+        mTopAdapter = new RecyclerViewAdapterTemplate(mTopDate, R.layout.a_item);
+        mTopAdapter.setDataBindView(new RecyclerViewAdapterTemplate.DataBindView() {
+            @Override
+            public void bind(RecyclerViewAdapterTemplate.ViewHolder holder, int position, List data) {
+                final int i = position;
+                final String obj = (String) data.get(position);
+                TextView textView = (TextView) holder.findViewId(R.id.text);
+                textView.setText(obj);
+                SimpleDraweeView draweeView = (SimpleDraweeView) holder.findViewId(R.id.drawee);
+                draweeView.setImageURI(obj);
+                draweeView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        open(REQUEST_CODE + i);
+                    }
+                });
+            }
+        });
+        mTopView.setAdapter(mTopAdapter);
+
         return view;
+    }
+
+    public void open(int requestCode) {
+        File outputImage = new File(Environment.getExternalStorageDirectory(), "tempImage.jpg");
+        try {
+            if (outputImage.exists()) {
+                outputImage.delete();
+            }
+            outputImage.createNewFile();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+//
+//        Uri imageUri = Uri.fromFile(outputImage);
+        mImageUri = FileProvider.getUriForFile(getContext(), "kaizone.songmaya.woo.fileprovider", outputImage);
+        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, mImageUri);
+        startActivityForResult(intent, requestCode);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        mTopAdapter.add(mImageUri.toString());
+        if (requestCode == REQUEST_CODE) {
+
+        }
+        else if (requestCode == REQUEST_CODE + 1) {
+
+        }
     }
 
     public static String getAnnactionInfo() {
@@ -130,7 +203,7 @@ public class GouHuaApiTest extends Fragment {
     }
 
     public static List<String> getAnnactionApiServices() {
-        String classpath = "com.haiercash.gouhua.retrofit.service.ApiService";
+        String classpath = "kaizone.songmaya.haiercash.retrofit.service.ApiRepository";
         ArrayList arrayList = new ArrayList();
         try {
             Method[] methods = Class.forName(classpath).getMethods();
@@ -207,7 +280,58 @@ public class GouHuaApiTest extends Fragment {
             token();
         } else if (obj.contains("getBankList")) {
             getBankList();
+        } else if (obj.contains("smartNsLogin")) {
+            smartNsLogin();
+        } else if (obj.contains("smartNsSetup1")) {
+            smartNsSetup1();
+        } else if (obj.contains("smartNsSetup2")) {
+            smartNsSetup2();
         }
+    }
+
+    public void smartNsLogin() {
+        Map<String, String> map = new HashMap<>();
+        new ApiBuilder().context(getContext()).nextListener(new SubscriberOnNextListener<Entity>() {
+            @Override
+            public void next(Entity entity) {
+
+            }
+        }).errorListener(new SubscriberOnErrorListener() {
+            @Override
+            public void onError(Throwable e) {
+
+            }
+        }).smartNsLogin(map);
+    }
+
+    public void smartNsSetup1() {
+        Map<String, String> map = new HashMap<>();
+        new ApiBuilder().context(getContext()).nextListener(new SubscriberOnNextListener<Entity>() {
+            @Override
+            public void next(Entity entity) {
+
+            }
+        }).errorListener(new SubscriberOnErrorListener() {
+            @Override
+            public void onError(Throwable e) {
+
+            }
+        }).smartNsSetup1(map);
+    }
+
+    public void smartNsSetup2() {
+        Map<String, String> map = new HashMap<>();
+        new ApiBuilder().context(getContext()).nextListener(new SubscriberOnNextListener<Entity>() {
+            @Override
+            public void next(Entity entity) {
+
+            }
+        }).errorListener(new SubscriberOnErrorListener() {
+            @Override
+            public void onError(Throwable e) {
+
+            }
+        }).smartNsSetup2(map);
     }
 
     //检测版本号

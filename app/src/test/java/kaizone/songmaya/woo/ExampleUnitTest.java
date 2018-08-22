@@ -1,7 +1,5 @@
 package kaizone.songmaya.woo;
 
-import com.haiercash.gouhua.retrofit.annoation.NeedToken;
-import com.haiercash.gouhua.retrofit.service.ApiService;
 
 import org.junit.Test;
 
@@ -24,6 +22,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import kaizone.songmaya.haiercash.retrofit.annoation.NeedToken;
+import kaizone.songmaya.jsyl.retrofitutil.user.ApiService;
 import kaizone.songmaya.woo.util.AESUtil;
 import kaizone.songmaya.woo.util.DES;
 import retrofit2.http.DELETE;
@@ -31,7 +31,7 @@ import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 /**
  * Example local unit test, which will execute on the development machine (host).

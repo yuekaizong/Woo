@@ -41,6 +41,8 @@ public class HttpUtil {
 //    private static final String BASE_URL = "https://shop.haiercash.com/"; //测试环境
 //    private static final String BASE_URL = "http://10.164.194.121/"; //封试环境
 
+    private static final String OAUTH_TOKEN = "/app/oauth/token";
+
     //Rerofit中封装了超时处理机制，拦截器
     private HttpUtil() {
         retrofit = new Retrofit.Builder()
@@ -189,7 +191,7 @@ public class HttpUtil {
                 sb.append("client_secret").append("=").append(HttpUtil.sClientSecret).append("&");
                 sb.append("grant_type").append("=").append("client_credentials").append("&");
                 sb.append("client_id").append("=").append(Persistence.clientId(mContext));
-                Request.Builder token_builder = new Request.Builder().get().url(BASE_URL + "/app/appserver/token?" + sb.toString());
+                Request.Builder token_builder = new Request.Builder().get().url(BASE_URL + OAUTH_TOKEN + "?" + sb.toString());
                 addHeader(mContext, token_builder);
                 Request token_request = token_builder.build();
                 Response token_response = chain.proceed(token_request);
