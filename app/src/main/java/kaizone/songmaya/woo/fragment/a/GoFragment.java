@@ -12,7 +12,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,10 +20,8 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.controller.BaseControllerListener;
 import com.facebook.drawee.controller.ControllerListener;
-import com.facebook.drawee.interfaces.DraweeController;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.facebook.imagepipeline.image.ImageInfo;
 import com.github.barteksc.pdfviewer.PDFView;
@@ -32,19 +29,11 @@ import com.github.barteksc.pdfviewer.listener.OnDrawListener;
 import com.github.barteksc.pdfviewer.listener.OnLoadCompleteListener;
 import com.github.barteksc.pdfviewer.listener.OnPageChangeListener;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import kaizone.songmaya.jsyl.retrofitutil.bean.Notice;
-import kaizone.songmaya.jsyl.retrofitutil.bean.Result;
-import kaizone.songmaya.jsyl.retrofitutil.bean.User;
-import kaizone.songmaya.jsyl.retrofitutil.bean.Viewpoint;
-import kaizone.songmaya.jsyl.retrofitutil.user.APIFactory;
-import kaizone.songmaya.jsyl.retrofitutil.util.SubscriberOnNextListenter;
 import kaizone.songmaya.woo.ItemDetailActivity;
 import kaizone.songmaya.woo.R;
-import kaizone.songmaya.woo.util.FrescoUtils;
 import kaizone.songmaya.woo.util.MediaUtils;
 import kaizone.songmaya.woo.util.RecyclerViewAdapterTemplate;
 import kaizone.songmaya.woo.util.Tips;
@@ -129,23 +118,6 @@ public class GoFragment extends Fragment {
                 list.add(item);
             }
         }
-        APIFactory.getInstance().updateViewpoint(new SubscriberOnNextListenter<Result<Viewpoint>>() {
-            @Override
-            public void next(Result<Viewpoint> viewPointResult) {
-                Tips.toDialog(getContext(), viewPointResult.message);
-            }
-        }, getContext(), list, "我的照片組");
-    }
-
-    public void sendGetViewpoint(final Integer id){
-        updateContainerCompent(TestData.getViewpoint(0));
-
-        APIFactory.getInstance().getViewpointId(new SubscriberOnNextListenter<Result<Viewpoint>>() {
-            @Override
-            public void next(Result<Viewpoint> result) {
-                updateContainerCompent(result.data);
-            }
-        }, getContext(), id);
     }
 
     public View view2(LayoutInflater inflater) {
@@ -179,14 +151,7 @@ public class GoFragment extends Fragment {
         button1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String item = (String) adapter.getItem(mIndex);
-                item = item.replace("file:", "");
-                APIFactory.getInstance().updateViewpoint(new SubscriberOnNextListenter<Result<Viewpoint>>() {
-                    @Override
-                    public void next(Result<Viewpoint> viewPointResult) {
 
-                    }
-                }, getContext(), item, "我的照片1");
 
             }
         });
@@ -283,12 +248,7 @@ public class GoFragment extends Fragment {
         button1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                APIFactory.getInstance().getNotice(new SubscriberOnNextListenter<Result<Notice>>() {
-                    @Override
-                    public void next(Result<Notice> result) {
-                        textView.setText(result.toString());
-                    }
-                }, getContext());
+
             }
         });
 
@@ -297,19 +257,7 @@ public class GoFragment extends Fragment {
         button2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                User user = new User();
-                user.name = editText1.getText().toString();
-                user.loginName = editText2.getText().toString();
-                user.plainPassword = "123456";
-                user.password = "123456";
-                user.email = "test@test.com";
-                user.description = editText3.getText().toString();
-                APIFactory.getInstance().getCreate(new SubscriberOnNextListenter<Result>() {
-                    @Override
-                    public void next(Result result) {
-                        textView.setText(result.toString());
-                    }
-                }, getContext(), user);
+
             }
         });
 
@@ -330,28 +278,7 @@ public class GoFragment extends Fragment {
         button3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                APIFactory.getInstance().getViewpointId(new SubscriberOnNextListenter<Result<Viewpoint>>() {
-                    @Override
-                    public void next(Result<Viewpoint> result) {
-                        textView.setText(result.toString());
-                        imageView1.setImageURI(result.data.img1);
-//                        imageView2.setImageURI(result.data.img2);
-//                        imageView3.setImageURI(result.data.img3);
 
-                        DraweeController controller = Fresco.newDraweeControllerBuilder()
-                                .setControllerListener(controllerListener)
-                                .setUri(result.data.img3)
-                                .build();
-                        imageView3.setController(controller);
-
-                        if (FrescoUtils.isImageDownloaded(result.data.img1, getContext())) {
-                            File file = FrescoUtils.getCachedImageOnDisk(result.data.img1, getContext());
-                            Log.e(NAME, "file=" + file.getAbsolutePath());
-                            imageView2.setImageURI("file:" + file.getAbsolutePath());
-                        }
-
-                    }
-                }, getContext(), 16);
             }
         });
 

@@ -27,19 +27,14 @@ import com.facebook.drawee.view.SimpleDraweeView;
 import java.util.ArrayList;
 import java.util.List;
 
-import kaizone.songmaya.jsyl.retrofitutil.bean.Result;
-import kaizone.songmaya.jsyl.retrofitutil.bean.Viewpoint;
-import kaizone.songmaya.jsyl.retrofitutil.user.APIFactory;
-import kaizone.songmaya.jsyl.retrofitutil.util.SubscriberOnErrorListener;
-import kaizone.songmaya.jsyl.retrofitutil.util.SubscriberOnNextListenter;
 import kaizone.songmaya.woo.fragment.FragmentController;
 import kaizone.songmaya.woo.fragment.a.GoFragment;
 import kaizone.songmaya.woo.fragment.a.GoWebFragment;
 import kaizone.songmaya.woo.fragment.a.GouHuaApiTest;
 import kaizone.songmaya.woo.fragment.a.LocalFunc;
 import kaizone.songmaya.woo.fragment.a.TestData;
+import kaizone.songmaya.woo.fragment.a.Viewpoint;
 import kaizone.songmaya.woo.util.RecyclerViewAdapterTemplate;
-import kaizone.songmaya.woo.util.Tips;
 
 /**
  * Created by yuekaizhong on 2016/5/5.
@@ -203,23 +198,6 @@ public class HomeActivity extends BaseActivity {
         mSwipeRefreshLayout.setRefreshing(true);
         mProgressBar.setVisibility(View.VISIBLE);
 
-        APIFactory.getInstance().getViewpointAll(new SubscriberOnNextListenter<Result<List<Viewpoint>>>() {
-            @Override
-            public void next(Result<List<Viewpoint>> result) {
-                Tips.toToast(HomeActivity.this, result.message);
-                mSwipeRefreshLayout.setRefreshing(false);
-                mProgressBar.setVisibility(View.GONE);
-
-                mAdapter.clear();
-                mAdapter.addData(result.data);
-            }
-        }, new SubscriberOnErrorListener() {
-            @Override
-            public void onError(Throwable e) {
-                mSwipeRefreshLayout.setRefreshing(false);
-                mProgressBar.setVisibility(View.GONE);
-            }
-        }, this);
     }
 
     View.OnClickListener fabClickListener = new View.OnClickListener() {

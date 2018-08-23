@@ -22,7 +22,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import kaizone.songmaya.haiercash.retrofit.annoation.NeedToken;
+import kaizone.songmaya.datamanager.retrofit.annoation.NeedToken;
 import kaizone.songmaya.jsyl.retrofitutil.user.ApiService;
 import kaizone.songmaya.woo.util.AESUtil;
 import kaizone.songmaya.woo.util.DES;

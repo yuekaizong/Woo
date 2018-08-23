@@ -16,7 +16,6 @@ import com.facebook.drawee.view.SimpleDraweeView;
 import java.util.ArrayList;
 import java.util.List;
 
-import kaizone.songmaya.jsyl.retrofitutil.bean.Viewpoint;
 import kaizone.songmaya.woo.R;
 import kaizone.songmaya.woo.util.RecyclerViewAdapterTemplate;
 
