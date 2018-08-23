@@ -1,29 +1,38 @@
 package kaizone.songmaya.woo.fragment.a;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Base64;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.facebook.drawee.view.SimpleDraweeView;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -76,6 +85,8 @@ public class GouHuaApiTest extends Fragment {
     private int REQUEST_CODE = 110;
 
     private Uri mImageUri;
+    private File outputImage;
+    private List<File> outputFiles = new ArrayList<>();
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -84,7 +95,7 @@ public class GouHuaApiTest extends Fragment {
         mData.add("GouHuaApiDetail");
         mData.addAll(getAnnactionApiServices());
 
-        mTopDate.add("添加文件");
+        mTopDate.add("http://pic.jj20.com/up/allimg/911/101416132J5/161014132J5-1.jpg");
     }
 
     @Nullable
@@ -134,15 +145,18 @@ public class GouHuaApiTest extends Fragment {
             @Override
             public void bind(RecyclerViewAdapterTemplate.ViewHolder holder, int position, List data) {
                 final int i = position;
-                final String obj = (String) data.get(position);
+                String obj = data.get(position).toString();
                 TextView textView = (TextView) holder.findViewId(R.id.text);
                 textView.setText(obj);
                 SimpleDraweeView draweeView = (SimpleDraweeView) holder.findViewId(R.id.drawee);
+                if (obj.startsWith("/")) {
+                    obj = "file:/" + obj;
+                }
                 draweeView.setImageURI(obj);
                 draweeView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        open(REQUEST_CODE + i);
+                        openCamera(REQUEST_CODE + i);
                     }
                 });
             }
@@ -152,8 +166,15 @@ public class GouHuaApiTest extends Fragment {
         return view;
     }
 
-    public void open(int requestCode) {
-        File outputImage = new File(Environment.getExternalStorageDirectory(), "tempImage.jpg");
+    public void openCamera(int requestCode) {
+        int permissionState = ContextCompat.checkSelfPermission(getContext(), Manifest.permission.CAMERA);
+        if (permissionState == PackageManager.PERMISSION_DENIED) {
+            ActivityCompat.requestPermissions(getActivity(), new String[]{
+                    Manifest.permission.CAMERA
+            }, requestCode);
+            return;
+        }
+        outputImage = new File(Environment.getExternalStorageDirectory(), String.format("tempImage_%s.jpg", requestCode));
         try {
             if (outputImage.exists()) {
                 outputImage.delete();
@@ -162,9 +183,8 @@ public class GouHuaApiTest extends Fragment {
         } catch (Exception e) {
             e.printStackTrace();
         }
-//
-//        Uri imageUri = Uri.fromFile(outputImage);
-        mImageUri = FileProvider.getUriForFile(getContext(), "kaizone.songmaya.woo.fileprovider", outputImage);
+
+        mImageUri = FileProvider.getUriForFile(getContext(), "kaizone.songmaya.woo.FileProvider", outputImage);
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         intent.putExtra(MediaStore.EXTRA_OUTPUT, mImageUri);
         startActivityForResult(intent, requestCode);
@@ -173,12 +193,25 @@ public class GouHuaApiTest extends Fragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        mTopAdapter.add(mImageUri.toString());
+        mTopAdapter.add(mImageUri);
+        outputFiles.add(outputImage);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        boolean permissionGranted = true;
         if (requestCode == REQUEST_CODE) {
+            for (int i = 0; i < grantResults.length; i++) {
+                int grant = grantResults[i];
+                if (grant == PackageManager.PERMISSION_DENIED) {
+                    Toast.makeText(getContext(), "权限拒绝" + permissions[i], Toast.LENGTH_SHORT).show();
+                    permissionGranted = false;
+                }
+            }
 
-        }
-        else if (requestCode == REQUEST_CODE + 1) {
-
+            if (permissionGranted) {
+                openCamera(REQUEST_CODE);
+            }
         }
     }
 
@@ -280,21 +313,31 @@ public class GouHuaApiTest extends Fragment {
             token();
         } else if (obj.contains("getBankList")) {
             getBankList();
-        } else if (obj.contains("smartNsLogin")) {
+        } else if (obj.contains("login")) {
             smartNsLogin();
-        } else if (obj.contains("smartNsSetup1")) {
+        } else if (obj.contains("setup1")) {
             smartNsSetup1();
-        } else if (obj.contains("smartNsSetup2")) {
+        } else if (obj.contains("setup2")) {
             smartNsSetup2();
         }
     }
 
     public void smartNsLogin() {
         Map<String, String> map = new HashMap<>();
+        map.put("userId", "13167066861");
+        map.put("deviceId", "DE123456");
+        map.put("password", "a123456");
         new ApiBuilder().context(getContext()).nextListener(new SubscriberOnNextListener<Entity>() {
             @Override
             public void next(Entity entity) {
+                Toast.makeText(getContext(), entity.toString(), Toast.LENGTH_SHORT).show();
+                Result<CustomerLogin> result = (Result<CustomerLogin>) entity;
+                Persistence.saveCustomerLogin(getContext(), result.body);
 
+                CustomerLogin customerLogin = Persistence.getCustomerLogin(getContext());
+                HttpUtil.sTokenStr = customerLogin.token.access_token;
+                HttpUtil.sClientSecret = customerLogin.clientSecret;
+                Log.e(TAG, customerLogin.toString());
             }
         }).errorListener(new SubscriberOnErrorListener() {
             @Override
@@ -306,10 +349,16 @@ public class GouHuaApiTest extends Fragment {
 
     public void smartNsSetup1() {
         Map<String, String> map = new HashMap<>();
+        map.put("ssoId", "13167066861");
+        map.put("contacts", "lulu");
+        map.put("profession", "码农");
+        map.put("carState", "3");
+
+
         new ApiBuilder().context(getContext()).nextListener(new SubscriberOnNextListener<Entity>() {
             @Override
             public void next(Entity entity) {
-
+                Toast.makeText(getContext(), entity.toString(), Toast.LENGTH_SHORT).show();
             }
         }).errorListener(new SubscriberOnErrorListener() {
             @Override
@@ -320,18 +369,46 @@ public class GouHuaApiTest extends Fragment {
     }
 
     public void smartNsSetup2() {
-        Map<String, String> map = new HashMap<>();
-        new ApiBuilder().context(getContext()).nextListener(new SubscriberOnNextListener<Entity>() {
-            @Override
-            public void next(Entity entity) {
-
+        try {
+            if (outputFiles.isEmpty()) {
+                return;
             }
-        }).errorListener(new SubscriberOnErrorListener() {
-            @Override
-            public void onError(Throwable e) {
 
+            if (outputFiles.size() < 3) {
+                return;
             }
-        }).smartNsSetup2(map);
+
+            File idFrontFile = outputFiles.get(0);
+            File idReverseFile = outputFiles.get(1);
+            File idHoldFile = outputFiles.get(2);
+            Map<String, String> map = new HashMap<>();
+
+            map.put("ssoId", "13167066861");
+            map.put("idFront", base64File(idFrontFile));
+            map.put("idReverse", base64File(idReverseFile));
+            map.put("idHold", base64File(idHoldFile));
+
+            new ApiBuilder().context(getContext()).nextListener(new SubscriberOnNextListener<Entity>() {
+                @Override
+                public void next(Entity entity) {
+                    Toast.makeText(getContext(), entity.toString(), Toast.LENGTH_SHORT).show();
+                }
+            }).errorListener(new SubscriberOnErrorListener() {
+                @Override
+                public void onError(Throwable e) {
+                    Log.e(TAG,"smartNsSetup2", e);
+                }
+            }).smartNsSetup2(map);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    String base64File(File file) throws Exception {
+        FileInputStream in = new FileInputStream(file);
+        byte[] b = new byte[in.available()];
+        in.read(b);
+        return Base64.encodeToString(b, Base64.NO_WRAP);
     }
 
     //检测版本号

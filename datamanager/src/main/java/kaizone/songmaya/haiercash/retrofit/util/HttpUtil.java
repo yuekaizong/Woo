@@ -37,7 +37,7 @@ public class HttpUtil {
     public static String sTokenStr;
     public static String sClientSecret;
 
-    private static final String BASE_URL = "http://10.164.194.121:9000/"; //测试环境
+    private static final String BASE_URL = "http://10.164.17.171:8081/"; //测试环境
 //    private static final String BASE_URL = "https://shop.haiercash.com/"; //测试环境
 //    private static final String BASE_URL = "http://10.164.194.121/"; //封试环境
 

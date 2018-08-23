@@ -11,9 +11,9 @@ android {
         versionName rootProject.ext.android.versionName
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         flavorDimensions rootProject.ext.android.versionName
-        ndk{
-            abiFilters 'armeabi', 'x86'
-        }
+//        ndk{
+//            abiFilters 'armeabi', 'x86'
+//        }
     }
     buildTypes {
         release {

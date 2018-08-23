@@ -29,12 +29,12 @@ public class FrescoUtils {
                 context.getExternalCacheDir().getPath());
         Log.e(TAG, fileInfo);
 
-        DiskCacheConfig diskCacheConfig = DiskCacheConfig.newBuilder(context).
-                setBaseDirectoryPath(context.getExternalCacheDir()).build();
+//        DiskCacheConfig diskCacheConfig = DiskCacheConfig.newBuilder(context).
+//                setBaseDirectoryPath(context.getExternalCacheDir()).build();
 
-        ImagePipelineConfig config = ImagePipelineConfig.newBuilder(context)
-                .setMainDiskCacheConfig(diskCacheConfig)
-                .build();
+//        ImagePipelineConfig config = ImagePipelineConfig.newBuilder(context)
+//                .setMainDiskCacheConfig(diskCacheConfig)
+//                .build();
 //        Fresco.initialize(getContext(), config);
         Fresco.initialize(context);
     }

@@ -30,11 +30,13 @@ public interface ApiRepository {
 
 
     @PUT("/customer/login")
-    Observable<Result>  smartNsLogin(@Body Map map);
+    Observable<Result<CustomerLogin>>  smartNsLogin(@Body Map map);
 
+    @NeedToken
     @POST("/setup1")
     Observable<Result>  smartNsSetup1(@Body Map map);
 
+    @NeedToken
     @POST("/setup2")
     Observable<Result>  smartNsSetup2(@Body Map map);
 

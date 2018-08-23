@@ -49,9 +49,9 @@ public class ApiBuilder implements ApiRepository {
     }
 
     @Override
-    public Observable<Result> smartNsLogin(Map map) {
-        Observable<Result> call = HttpUtil.getApiService(context).smartNsLogin(map);
-        HttpUtil.toSubscribe(call, new ProgressSubscriber<Result>(nextListener, errorListener, context));
+    public Observable<Result<CustomerLogin>> smartNsLogin(Map map) {
+        Observable<Result<CustomerLogin>> call = HttpUtil.getApiService(context).smartNsLogin(map);
+        HttpUtil.toSubscribe(call, new ProgressSubscriber<Result<CustomerLogin>>(nextListener, errorListener, context));
         return call;
     }
 

@@ -12,8 +12,6 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.CAMERA" />
 
-    <uses-feature android:name="android.hardware.camera" />
-
     <application
         android:name=".MyApplication"
         android:allowBackup="false"
@@ -40,8 +38,8 @@
         <activity
             android:name="kaizone.songmaya.woo.ContainerActivity"
             android:label="@string/title_item_detail"
-            android:windowSoftInputMode="stateHidden"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="stateHidden" />
         <activity
             android:name="kaizone.songmaya.woo.ItemDetailActivity"
             android:label="@string/title_item_detail"
@@ -81,9 +79,10 @@
         <meta-data
             android:name="TD_CHANNEL_ID"
             android:value="${TD_CHANNEL_ID}" />
+
         <provider
             android:name="android.support.v4.content.FileProvider"
-            android:authorities="${applicationId}.provider"
+            android:authorities="${applicationId}.FileProvider"
             android:exported="false"
             android:grantUriPermissions="true">
             <meta-data

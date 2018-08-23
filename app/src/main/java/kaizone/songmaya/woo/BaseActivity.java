@@ -31,7 +31,7 @@ public class BaseActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         checkHashPermission();
-        FrescoUtils.config(this);
+//        FrescoUtils.config(this);
     }
 
     @TargetApi(23)

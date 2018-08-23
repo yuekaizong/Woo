@@ -31,15 +31,10 @@ import com.github.barteksc.pdfviewer.PDFView;
 import com.github.barteksc.pdfviewer.listener.OnDrawListener;
 import com.github.barteksc.pdfviewer.listener.OnLoadCompleteListener;
 import com.github.barteksc.pdfviewer.listener.OnPageChangeListener;
-import com.youth.banner.Banner;
-
-import junit.framework.Test;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import kaizone.songmaya.jsyl.retrofitutil.bean.Notice;
 import kaizone.songmaya.jsyl.retrofitutil.bean.Result;
@@ -91,8 +86,8 @@ public class GoFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return view2(inflater);
-//        return view1();
+//        return view2(inflater);
+        return view1();
     }
 
     @Override
